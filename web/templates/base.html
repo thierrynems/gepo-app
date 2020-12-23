@@ -1,0 +1,149 @@
+<!-- {% load staticfiles %} -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="{% static 'favicon.png' %}">
+
+    <title>{% block title %}GEPO: Gene Essential Predictor Online{% endblock %}</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+
+    <!-- <link href="{% static 'css/datatables.min.css' %}" rel="stylesheet"> -->
+    <!-- ============================DataTable ================================== -->
+    <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css" />
+    <!-- ============================bootstrap-select ================================== -->
+   <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css"> -->
+   <link href="{% static 'css/bootstrap-select.min.css' %}" rel="stylesheet">
+    <!-- Custom styles for this template -->
+    <link href="{% static 'css/style.css' %}" rel="stylesheet">
+    {% block css %}{% endblock %}
+    
+    <style type="text/css">
+        .active{
+        color: blue;
+        }
+    </style>
+
+<!--
+<script language="javascript">
+  function setActive() {
+    aObj = document.getElementById('nav').getElementsByTagName('a');
+    for(i=0;i<aObj.length;i++) {
+      if(document.location.href.indexOf(aObj[i].href)>=0) {
+        aObj[i].className='active';
+      }
+    }
+  }
+  window.onload = setActive;
+</script>
+-->
+</head>
+
+<body>
+
+{% block navbar %}
+    {% include  '_items/navbar.html' %}
+{% endblock %}
+
+<div class="col-xs-12">
+
+    {% for message in messages %}
+        <div class="alert alert-dismissible alert-{{ message.tags }}">
+            <button type="button" class="close" data-dismiss="alert">×</button>
+            {{ message }}
+        </div>
+    {% endfor %}
+</div>
+
+<!-- Main jumbotron for a primary marketing message or call to action -->
+<div>
+    <br/><br/>
+    
+    <hr /><!-- Prediction Essential Gene with different Machine Learning Model -->
+</div> 
+<div class="col-xs-12 mx-auto"> <!--  class="container"  -->
+ <div class="row">
+    <div class="col-md-1"></div>
+    <div class="col-md-3">
+        <div class="container">
+         <h3 class="display-5"> Navigation</h3>
+          <nav class="nav flex-column nav-pills">
+            <a class="nav-link active" href="/">Home </a> <!-- <span class="sr-only">(current)</span> -->
+            <a class="nav-link" href="{% url 'predictform' %}">Test our Model</a>
+            <a class="nav-link" href="{% url 'searchbyprotein' %}">Predict by protein name</a>  
+            <a class="nav-link" href="{% url 'searchlistprotein' %}">Predict by list of protein</a>
+            <a class="nav-link" href="{% url 'searchorganism' %}">Predict by Organisms</a>
+            <a class="nav-link" href="{% url 'predicttextmining' %}">Predict from text mining</a>
+            <a class="nav-link" href="{% url 'loadmodel' %}">Load your own model</a>
+            <ul >
+            <li >Toolkit</a> 
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item"> <a class="nav-link" href="{% url 'displayapi' %}">API</a> </li>
+                    <li class="nav-item"> <a class="nav-link" href="{% url 'displaycolab' %}">Colab</a> </li>
+                    <li class="nav-item"> <a class="nav-link" href="{% url 'displaytutorial' %}">Tutorial</a> </li>
+                </ul>
+            </li>
+            </ul> 
+          </nav>
+            <!--
+            <ul class="navbar-nav mr-auto"> 
+            <li class="nav-item active"> <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a> </li>
+            <li class="nav-item"> <a class="nav-link" href="{% url 'predictform' %}">Prediction</a></li> 
+            <li class="nav-item"><a class="nav-link" href="{% url 'searchbyprotein' %}">Predict by protein name</a></li>
+            <li class="nav-item"><a class="nav-link" href="{% url 'searchlistprotein' %}">Predict by list of protein</a></li>
+            <li class="nav-item"> <a class="nav-link" href="{% url 'searchorganism' %}">Predict by Organisms</a></li>
+            <li class="nav-item"> <a class="nav-link" href="{% url 'predicttextmining' %}">Predict from text mining</a></li>
+            <li class="nav-item"> <a class="nav-link" href="{% url 'loadmodel' %}">Load your own model</a></li>
+        </ul>
+    -->
+        </div> 
+    </div>
+    
+    <div class="col-md-8">
+          {% block content %}
+          {% endblock %}
+    
+    </div>
+    </div>
+     <hr>
+     <footer>
+        <p>&copy; XXXXXX 2020</p>
+    </footer>
+    </div>
+ 
+<!-- /container -->
+
+
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+
+<!-- 
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+-->
+<script src="{% static 'js/jquery-3.5.1.min.js' %}"></script>
+
+<script src="{% static 'js/function.js' %}"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"
+        integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4"
+        crossorigin="anonymous"></script>
+<script>window.jQuery || document.write('<script src="{% static 'js/jquery.min.js'%}"><\/script>')</script>
+<script src="{% static 'js/bootstrap.min.js' %}"></script>
+<!--  JavaScript dataTables -->
+<script src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
+<!-- Latest compiled and minified JavaScript -->
+<!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js"></script> -->
+<script src="{% static 'js/bootstrap-select.min.js' %}"></script>
+<!-- <script src="{% static 'js/datatables.min.js' %}"></script> -->
+
+{% block js %}{% endblock %}
+</body>
+</html>

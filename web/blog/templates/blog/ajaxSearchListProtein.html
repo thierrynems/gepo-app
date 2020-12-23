@@ -1,0 +1,187 @@
+<script language="javascript">
+//dataTable  Step 2
+$(document).ready(function () {
+  $('#dtResults').DataTable();
+  $('.dataTables_length').addClass('bs-select');
+});
+//dataTable step 3
+$(document).ready(function () {
+  $('#dtRecap').DataTable();
+  $('.dataTables_length').addClass('bs-select');
+});
+</script>
+
+{% load static %} 
+{% if action == step %}
+ <form method="POST" id="post-form" > 
+    <input type="hidden" id="token" value="{% csrf_token %}" />
+    <div class="form-group row">
+    <div class="col-sm-4"><label for="proteinName">Protein List: </label></div>                    
+    <div class="col-sm-8">
+        <input type="text" id="idProteinName" value="{{ proteinList }}"  readonly="readonly" class="form-control" />
+    </div>
+  </div>
+  <div class="form-group row">
+    <div class="col-sm-4"><label for="species">Specie: </label></div>                    
+    <div class="col-sm-8">
+        <input type="text" id="idSpecie" value="{{ specie }}" readonly="readonly" class="form-control" />
+    </div>
+  </div>
+    <div class="form-group row">
+    <div class="col-sm-4"><label for="actionselestcion">Select Service: </label><span  id="errorService"></span></div>                    
+    <div class="col-sm-8">
+        <select id="actionSelect" class="form-control" name="actionSelect" required>
+            <option value="">choice Service...</option>
+            {% for code, nom in actionDict.items %}
+            <option value="{{ code }}">{{ nom }}</option>
+            {% endfor %} 
+          </select>
+    </div>
+  </div>
+</div>
+<div>
+  <table id="dtResults" class="table table-striped table-bordered table-sm" cellspacing="0" width="80%">
+ <!-- <table class="table table-striped" width="60%">  -->
+  <thead>
+    <tr>
+      <th class="th-sm"> # </th>
+      <th class="th-sm">Select</th>
+      <th class="th-sm">Organism</th> 
+      <th class="th-sm">#protein /query</th>
+      <th class="th-sm">Total protein of organism</th>
+      <th class="th-sm">Mapped item </th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for key, protein in listProtein.items %}
+    <tr>
+      <td>{{ key|add:"+1" }}</td>
+      <td><input type="radio" id="chk_{{ protein.specie_name }}" name="specie" value="{{ protein.gene_name }}|{{ protein.organism_code }}:{{ protein.gene_locus }}" class="form-check-input" onclick="test()" /></td>
+      <td>{{ protein.specie_name }}</td>
+      <td align="center">{{ protein.organism_protein_number}} / {{ number_protein_query }}</td>
+      <td></td>
+      <td>{{ protein.gene_name }}</td> <!-- protein.gene_name|truncatechars:80-->
+    </tr>
+      
+    {% endfor %}
+</tbody>
+</table>
+     
+<button type="button" class="btn btn-primary" onclick="" > <= Previous</button>
+<a href="{% static 'download/resultatListProteinStep1.csv' %} "  target="_blank" ><button type="button" class="btn btn-secondary" onclick="" > Download List(csv) </button> </a>
+<a href="{% static 'download/resultatListProteinStep1.txt' %}"  target="_blank"><button type="button" class="btn btn-secondary" onclick="" > Download List(txt) </button> </a>
+<button type="reset" class="btn btn-primary" onclick="checkFormStep2()" >Next => </button>
+</form>
+</div>
+{% else %} <!-- ===================================================Step3======================================================== -->
+    <div class="container" id='content'>
+    <h3 class="display-5"><b>Predict from multiple protein name / [Results] </b></h3>
+    <br />
+    <form method="POST" id="post-form" > 
+    <input type="hidden" id="token" value="{% csrf_token %}" />
+    <p><b>Protein list: {{ proteinList }}</b></p>
+    <p><b>Organism: {{ organism_code }}</b></p>
+    <!-- <p><b>gene Locus: {{ listCheck }}</b></p>  -->
+    <table id="dtRecap" class="table table-striped table-bordered table-sm" cellspacing="0" width="80%">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">gene Locus</th>
+      <th scope="col">Protein/Gene name</th>
+      <th scope="col">Model</th>
+      <th scope="col">Feature</th>
+      <!--<th scope="col">Observation</th> -->
+    </tr>
+  </thead>
+  <tbody>
+    {% for key, result in resultDict.items %}
+    <tr>
+      <td>{{ key|add:"+1" }}</td>
+      <td>{{ result.geneLocus }}</td>
+      <td>{{ result.protein_name }}</td>
+      <td>
+        <table>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">Name</th>
+          <th scope="col">E_score</th>
+          <th scope="col">NE_score</th>
+          <th scope="col">Dec.</th>
+       </tr>
+         {% for myModel, model in result.model.items %}
+         <tr>
+          <td></td>
+          <td><b>{{ myModel }}</b></td>
+          <td>{{ model.EssentialGeneProbability }}</td>
+          <td>{{ model.NonEssentialGeneProbability }}</td>
+          <td>{{ model.decision }}</td>
+         </tr>
+          <!--<p><b>{{ cle }}</b>  <br/> <b>E_score:</b>  <i>{{ model.EssentialGeneProbability }}</i> <b>NE_Score:</b>  <i>{{ model.NonEssentialGeneProbability }}</i> </p>-->
+        {% endfor %}
+      </table>
+      </td>
+      <td>
+      <table> 
+        <tr>
+          <td><b>CIARCSU:</b></td>
+          <td>{{ result.feature.CIARCSUFeat }}</td>
+        </tr>
+        <tr>
+          <td><b>GC Content:</b></td>
+          <td>{{ result.feature.GCFeat  }}</td>
+        </tr>
+        <tr>
+          <td><b>Gene Length:</b></td>
+          <td>{{ result.feature.GeneLength  }}</td>
+        </tr>
+        <tr>
+          <td><b>Kmer:</b></td>
+          <td>{{ result.feature.KmerFeat  }}</td>
+        </tr>
+        <tr>
+          <td><b>ProteinFeat:</b></td>
+          <td>{{ result.feature.ProteinFeat  }}</td>
+        </tr>
+         <!-- {{ result.feature.CIARCSUFeat }} / {{ result.feature.GCFeat }} / {{ result.feature.GeneLength }} / {{ result.feature.KmerFeat }} / {{ result.feature.ProteinFeat }} -->
+        </table>
+      </td>
+     <!-- <td> 
+      {{result.errorSeq}} 
+      {{result.errorApi}}
+      </td>
+    -->
+    </tr>
+      
+    {% endfor %}
+<table>
+  <tr>
+    <td><button type="button" class="btn btn-primary" onclick="" > <= Previous </button></td>
+    <td>
+      <a href="{% static 'download/predictResultListProtein.csv' %} "  target="_blank" >
+        <button type="button" class="btn btn-secondary" onclick="" > Download Prediction(csv) </button> 
+      </a>
+      <a href="{% static 'download/predictResultListProtein.txt' %}"  target="_blank">
+        <button type="button" class="btn btn-secondary" onclick="" > Download Prediction(txt) </button> 
+      </a>
+    </td>
+      
+    <td>
+      <a href="{% static 'download/FeatureResultListProtein.csv' %} "  target="_blank" >
+        <button type="button" class="btn btn-secondary" onclick="" > Download Feature(csv) </button> 
+      </a>
+      <a href="{% static 'download/FeatureResultListProtein.txt' %}"  target="_blank">
+        <button type="button" class="btn btn-secondary" onclick="" > Download Feature(txt) </button> 
+      </a>
+    </td>
+  </tr>
+  </table>
+     
+  </tbody>
+</table>
+
+</form>
+</div>
+{% endif %}
+
+
+ 

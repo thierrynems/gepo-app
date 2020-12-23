@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block css %}
+    <link href="{% static 'css/users.css' %}" rel="stylesheet">
+{% endblock %}
+{% block js %}
+<script language="javascript">
+//fonction de soumission du formulaire
+ function submitForm(){
+
+    organism=document.getElementById('idOrganism').value;
+    if(organism!="" ){
+            $('#content').html('<img src="{% static 'loading.gif' %}" alt="loading...." width="200" height="200" align="center" /> ');
+            $.ajax({
+            type:'POST',
+            dataType : 'html',
+            url:'{% url "ajaxsearchorganism" %}',
+            data:{
+                organism:organism,
+                csrfmiddlewaretoken:'{{ csrf_token}}',
+                action: 'step1',
+            },
+            success:function(data){
+                //document.getElementById("post-form").reset();
+                //$("results").prepend(data)
+                $('#content').html(data)
+            },
+            error : function(xhr,errmsg,err) {
+            console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+        $('#content').html("Error :"+xhr.status);
+        }
+        });
+        }else{
+            //$('#content').html("Error: invalid data please check - please check your fill");
+            alert("Error: please check your fill");
+
+        }
+  
+}
+</script>
+{% endblock %}
+{% block content %}
+    <div class="jumbotron">
+         <div class="container" id='content'>
+            <h3 class="display-5">Predict from Organism </h1>
+                 
+                <br />
+            <!--
+            <div class="row">
+            <div class="col-sm-6">
+            -->
+            <form method="POST" id="post-form" > <!--action="{% url 'predictform' %}" method="POST" -->
+            <input type="hidden" id="token" value="{% csrf_token %}" />
+              
+                  <div class="form-group row">
+                    <div class="col-sm-4"><label for="organism"></label>Select the organism<span id="errorOrganism"></span></div>
+                    <div class="col-sm-8">
+                        <select id="idOrganism" name="organism" class="selectpicker" data-live-search="true" data-width="fit" required> <!--class="form-control" -->
+                            <option value="" data-tokens="autodetect">autodetect</option>
+                            {% for taxaId, organism in organismDict.items %}
+                            <option value="{{ taxaId }}" data-tokens="{{ organism }}">{{ organism }}</option>
+                            {% endfor %}                             
+                          </select>
+                    </div>
+                     
+                  </div>
+                <button type="button" class="btn btn-primary" onclick="submitForm()" >Next</button> 
+                <button type="reset" class="btn btn-primary" >Reset</button>
+              </form>
+           <!-- <div class="col-sm-6" id="results"> 
+                
+            </div>
+        </div>
+    -->
+        </div>
+    </div>
+    
+{% endblock %}

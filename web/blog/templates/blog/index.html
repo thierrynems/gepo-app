@@ -1,0 +1,159 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block css %}
+    <link href="{% static 'css/users.css' %}" rel="stylesheet">
+{% endblock %}
+{% block js %}
+<script language="javascript">
+//fonction de soumission du formulaire
+function example(number){
+    if(number==1){
+        document.getElementById('idsearch').value="trpA";
+    }else if(number==2){
+        document.getElementById('idsearch').value="trpB";
+    }else if(number==3){
+        document.getElementById('idsearch').value="TRPC_ECOLI";
+    }
+}
+function checkForm(){
+    proteinName = $('#idsearch').val();
+    specie = "auto";
+    if(specie!="" && proteinName!=""){
+        $('#content').html(""); //reset result content
+        $('#content').html('<img src="{% static 'loading.gif' %}" alt="loading...." width="200" height="200" align="center" /> ');
+            $.ajax({
+            type:'POST',
+            dataType : 'html',
+            url:'{% url "ajaxsearchprotein" %}',
+            data:{
+                proteinName:proteinName, 
+                specie:specie,
+                csrfmiddlewaretoken:'{{ csrf_token}}',
+                action: 'step1',
+            },
+            success:function(data){
+                //document.getElementById("post-form").reset();
+                //$("results").prepend(data)
+                $('#content').html(data)
+            },
+            error : function(xhr,errmsg,err) {
+            console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+        $('#content').html("Error :"+xhr.status+" Detail: "+ xhr.responseText);
+        }
+        });
+    }else{
+        alert("Error: please check your fill");
+    }
+    
+}
+
+function checkFormStep2(){
+
+    //get list of protein check 
+    var tableau =[];
+    var listCheck=""
+    var checkbox =document.getElementsByTagName('input');
+    compteur=checkbox.length;
+    for (var i=0; i<compteur; i++){
+        if (checkbox[i].checked==true){
+            tableau[i]=checkbox[i].value;
+            if(listCheck=="")listCheck=checkbox[i].value;
+            else listCheck=listCheck+";"+checkbox[i].value;
+            }
+        }
+    
+    proteinName = $('#idProteinName').val();
+    specie = $('#idSpecie').val();
+    service = $('#actionSelect').val();
+    proteinID=$('#proteinID').val();
+    proteinExternalId=$('#proteinExternalId').val();
+    //alert(proteinID)
+    if(specie!="" && proteinName!="" && service!="" && listCheck!=""){
+        $('#content').html(""); //reset result content
+        $('#content').html('<img src="{% static 'loading.gif' %}" alt="loading...." width="200" height="200" align="center" /> ');
+            $.ajax({
+            type:'POST',
+            dataType : 'html',
+            url:'{% url "ajaxsearchprotein" %}',
+            data:{
+                proteinName:proteinName, 
+                specie:specie,
+                service:service,
+                listCheck:listCheck,
+                proteinID:proteinID,
+                proteinExternalId:proteinExternalId,
+                csrfmiddlewaretoken:'{{ csrf_token}}',
+                action: 'step2',
+            },
+            success:function(data){
+                //document.getElementById("post-form").reset();
+                //$("results").prepend(data)
+                $('#content').html(data)
+            },
+            error : function(xhr,errmsg,err) {
+            console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+        $('#content').html("Error :"+xhr.status+" Detail: "+ xhr.responseText);
+        }
+        });
+    }else{
+        alert("Error: please check your fill");
+    }
+    
+}
+
+//submit form to step 3
+function selectAll (ch) {
+    var tab = document.getElementsByTagName("input"); 
+    for (var i = 0; i < tab.length; i++) { 
+        if (tab[i].type == "checkbox")
+            tab[i].checked = ch.checked;
+    }
+}
+</script>
+{% endblock %}
+{% block content %}
+    <div class="jumbotron">
+        <div class="container">
+            <h1 class="display-5">Gene Essential Predictor Online</h1>
+            <p><i>This platform collects a set of Machine Learning models for the prediction of essential genes.</i></p>
+            <!-- <p><a class="btn btn-primary btn-lg" href="#" role="button">Learn more &raquo;</a></p> -->
+              <form  action="#" method="POST" id="post-form" >
+                <input type="hidden" id="token" value="{% csrf_token %}" />
+                <input class="form-control input-sm" type="text" placeholder="Search ~~ 5000 Essential genes | enter the name of a protein" aria-label="search" name="search" id="idsearch">
+                <button class="btn btn-outline-success my-2 my-sm-0" type="button" onclick="checkForm()">Search</button> | Protein name Example (
+                <a href="#" onclick="example(1)">#1</a>
+                <a href="#" onclick="example(2)">#2</a>
+                <a href="#" onclick="example(3)">#3</a>
+                )
+            </form>
+        </div>
+    </div>
+
+    <!-- Example row of columns -->
+    <div id="content">
+        <div class="row">
+    <div class="col-md-4">
+        <h2>Heading</h2>
+        <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris
+            condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod.
+            Donec sed odio dui. </p>
+        <p><a class="btn btn-secondary" href="#" role="button">View details &raquo;</a></p>
+    </div>
+    <div class="col-md-4">
+        <h2>Heading</h2>
+        <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris
+            condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod.
+            Donec sed odio dui. </p>
+        <p><a class="btn btn-secondary" href="#" role="button">View details &raquo;</a></p>
+    </div>
+    <div class="col-md-4">
+        <h2>Heading</h2>
+        <p>Donec sed odio dui. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Vestibulum id ligula porta
+            felis euismod semper. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum
+            massa justo sit amet risus.</p>
+        <p><a class="btn btn-secondary" href="#" role="button">View details &raquo;</a></p>
+    </div>
+    </div>
+    </div>
+{% endblock %}

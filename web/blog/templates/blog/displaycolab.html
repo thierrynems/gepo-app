@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block css %}
+    <link href="{% static 'css/users.css' %}" rel="stylesheet">
+{% endblock %}
+{% block js %}
+<script language="javascript">
+ 
+</script>
+{% endblock %}
+{% block content %}
+    <div class="jumbotron">
+         <div class="container" id='content'>
+            <h3 class="display-5">Our colab page </h1>
+                 <hr />
+                <br />
+            <div class="row">
+                <ul>
+                    <li>
+                    <a target="_blank" href="https://colab.research.google.com/drive/1ePisWBxmrxhxuY2YWXs9QGU9tkKyB_wC?usp=sharing">Model Train</a>
+                </li>
+                <li>
+                <a target="_blank" href="https://colab.research.google.com/drive/17QsZ1XFpPuwOsidqJqGexrDhF-bn5aFh?usp=sharing">Model Predict</a>
+                </li>
+                <li>
+                <a target="_blank" href="https://colab.research.google.com/drive/1q3HS-GfAHnDyYEdbwX7GTQwrqKoCX6JX?usp=sharing">Feature Engineering</a>
+                </li>
+            </ul>
+            <div class="col-sm-6">
+            
+             
+            </div>
+            <div class="col-sm-6" id="results"> 
+                
+            </div>
+        </div>
+        </div>
+    </div>
+    
+{% endblock %}

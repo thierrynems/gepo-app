@@ -1,0 +1,172 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block css %}
+    <link href="{% static 'css/users.css' %}" rel="stylesheet">
+{% endblock %}
+{% block js %}
+<script language="javascript">
+//fonction de soumission du formulaire
+function example(number){
+    if(number==1){
+        document.getElementById('proteinList').value="trpA\ntrpB\nTRPC_ECOLI\nb1263";
+    }else if(number==2){
+        document.getElementById('proteinList').value="trpC\nRNA-Ser\ndnaA\nDPO3B\ndnaN\nHARS";
+    }else if(number==3){
+        document.getElementById('proteinList').value="hisS\naspS\nMTHFS\nABC.PE.S\ndnaN\nselA";
+    }
+}
+function submitForm(){
+    proteinList=document.getElementById('proteinList').value;
+    organism=document.getElementById('idOrganism').value;
+    if(proteinList!="" && organism!="" ){
+            $('#content').html('<img src="{% static 'loading.gif' %}" alt="loading...." width="200" height="200" align="center" /> ');
+            proteinList=proteinList.replace(/[\s]/g, ';');
+            $.ajax({
+            type:'POST',
+            dataType : 'html',
+            url:'{% url "ajaxsearchlistprotein" %}',
+            data:{
+                proteinList:proteinList,
+                organism:organism,
+                csrfmiddlewaretoken:'{{ csrf_token}}',
+                action: 'step1',
+            },
+            success:function(data){
+                //document.getElementById("post-form").reset();
+                //$("results").prepend(data)
+                $('#content').html(data)
+            },
+            error : function(xhr,errmsg,err) {
+            console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+        $('#content').html("Error :"+xhr.status+" Detail: "+ xhr.responseText);
+        }
+        });
+        }else{
+            //$('#content').html("Error: invalid data please check - please check your fill");
+            alert("Error: please check your fill");
+
+        }
+  
+}
+ 
+function checkFormStep2(){
+
+    //get list of protein check 
+   /* var tableau =[];
+    var listCheck=""
+    var checkbox =document.getElementsByTagName('input');
+    compteur=checkbox.length;
+    for (var i=0; i<compteur; i++){
+        if (checkbox[i].checked==true){
+            tableau[i]=checkbox[i].value;
+            if(listCheck=="")listCheck=checkbox[i].value;
+            else listCheck=listCheck+";"+checkbox[i].value;
+            }
+        }
+    */
+    var listCheck=""
+    var checkbox =document.getElementsByTagName('input');
+    compteur=checkbox.length;
+    for (var i=0; i<compteur; i++){
+        if (checkbox[i].checked==true){
+            listCheck=checkbox[i].value;
+            }
+        }
+    
+    proteinName = $('#idProteinName').val();
+    specie = $('#idSpecie').val();
+    service = $('#actionSelect').val();
+    //proteinID=$('#proteinID').val();
+    //proteinExternalId=$('#proteinExternalId').val();
+    //alert(proteinID)
+    if(specie!="" && proteinName!="" && service!="" && listCheck!=""){
+        $('#content').html(""); //reset result content
+        $('#content').html('<img src="{% static 'loading.gif' %}" alt="loading...." width="200" height="200" align="center" /> ');
+            $.ajax({
+            type:'POST',
+            dataType : 'html',
+            url:'{% url "ajaxsearchlistprotein" %}',
+            data:{
+                proteinName:proteinName, 
+                specie:specie,
+                service:service,
+                listCheck:listCheck,
+                csrfmiddlewaretoken:'{{ csrf_token}}',
+                action: 'step2',
+            },
+            success:function(data){
+                //document.getElementById("post-form").reset();
+                //$("results").prepend(data)
+                $('#content').html(data)
+            },
+            error : function(xhr,errmsg,err) {
+            console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+        $('#content').html("Error :"+xhr.status+" Detail: "+ xhr.responseText);
+        }
+        });
+    }else{
+        alert("Error: please check your fill");
+    }
+    
+}
+
+</script>
+{% endblock %}
+{% block content %}
+    <div class="jumbotron">
+        <div class="container" id='content'>
+            <h3 class="display-5">Predict from the multiple protein name / [Step 1]  </h1>
+                 
+                <br />
+            <!--<div class="row">
+            <div class="col-sm-6">
+            -->
+            <form method="POST" id="post-form" > <!--action="{% url 'predictform' %}" method="POST" -->
+            <input type="hidden" id="token" value="{% csrf_token %}" />
+                
+                 <div class="form-group row">
+                    <div class="col-sm-4"></div>
+                    <div class="col-sm-8">
+                      <a href="#" onclick="example(1)">#Example 1 | </a>
+                      <a href="#" onclick="example(2)">#Example 2 | </a>
+                      <a href="#" onclick="example(3)">#Example 3</a>
+                    </div>
+                  </div>
+
+                 <div class="form-group row">
+                    <div class="col-sm-4"><label for="protein">Enter the list of protein</label><span id="errorProtein"></span></div>
+                    <div class="col-sm-8">
+                    <textarea class="form-control" id="proteinList" name="proteinList" rows="3" required onblur="test()"></textarea>
+                    </div>
+                  </div>
+                  
+                  <div class="form-group row">
+                    <div class="col-sm-4"><label for="uploadfile"></label>Upload file content protein<span id="errorFile"></span></div>
+                    <div class="col-sm-8">
+                        <input type="file" name="uploadfile" class="form-control" />
+                    </div>
+                </div>
+
+                 <div class="form-group row">
+                    <div class="col-sm-4"><label for="organism"></label>Select the organism<span id="errorOrganism"></span></div>
+                    <div class="col-sm-8">
+                        <select id="idOrganism" name="organism" class="selectpicker" data-live-search="true" data-width="fit" required> <!--class="form-control" -->
+                            <option value="auto" data-tokens="autodetect">autodetect</option>
+                            {% for taxaId, organism in organismDict.items %}
+                            <option value="{{ taxaId }}" data-tokens="{{ organism }}">{{ organism }}</option>
+                            {% endfor %}                             
+                          </select>
+                    </div>
+                     
+                  </div>
+                  <button type="reset" class="btn btn-primary" >Reset</button>
+                <button type="button" class="btn btn-primary" onclick="submitForm()" >Next=></button> 
+              </form>
+            <!--</div> -->
+            <!-- <div class="col-sm-6" id="results">  </div> -->
+        <!--</div> -->
+        </div>
+    </div>
+    
+{% endblock %}

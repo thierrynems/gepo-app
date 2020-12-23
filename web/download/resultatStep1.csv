@@ -1,0 +1,51 @@
+#,TaxaId,Species,Annotation,Protein Name
+1,314292,Photobacterium angustum S14,Tryptophan synthase beta chain; The beta subunit is responsible for the synthesis of L- tryptophan from indole and L-serine,trpB
+2,314345,Mariprofundus ferrooxydans PV-1,Tryptophan synthase beta chain; The beta subunit is responsible for the synthesis of L- tryptophan from indole and L-serine,trpB
+3,314607,beta proteobacterium KB13,Tryptophan synthase beta chain; The beta subunit is responsible for the synthesis of L- tryptophan from indole and L-serine,trpB
+4,315730,Bacillus weihenstephanensis KBAB4,Tryptophan synthase beta chain; The beta subunit is responsible for the synthesis of L- tryptophan from indole and L-serine,trpB
+5,315750,Bacillus pumilus SAFR-032,Tryptophan synthase beta chain; The beta subunit is responsible for the synthesis of L- tryptophan from indole and L-serine,trpB
+6,316056,Rhodopseudomonas palustris BisB18,Tryptophan synthase beta chain; The beta subunit is responsible for the synthesis of L- tryptophan from indole and L-serine,trpB
+7,316273,Xanthomonas campestris pv. vesicatoria str. 85-10,Tryptophan synthase beta chain; The beta subunit is responsible for the synthesis of L- tryptophan from indole and L-serine,trpB
+8,316274,Herpetosiphon aurantiacus DSM785,Tryptophan synthase beta chain; The beta subunit is responsible for the synthesis of L- tryptophan from indole and L-serine,trpB
+9,316275,Aliivibrio salmonicida LFI1238,Tryptophan synthase beta chain; The beta subunit is responsible for the synthesis of L- tryptophan from indole and L-serine,trpB
+10,316278,Synechococcus sp. RCC307,Tryptophan synthase beta chain; The beta subunit is responsible for the synthesis of L- tryptophan from indole and L-serine,trpB
+11,316279,Synechococcus sp. CC9902,Tryptophan synthase beta chain; The beta subunit is responsible for the synthesis of L- tryptophan from indole and L-serine,trpB
+12,316407,Escherichia coli str. K-12 substr. W3110,Tryptophan synthase beta chain; The beta subunit is responsible for the synthesis of L- tryptophan from indole and L-serine; Belongs to the TrpB family,trpB
+13,317013,Xanthomonas axonopodis pv. phaseoli,Tryptophan synthase beta chain; The beta subunit is responsible for the synthesis of L- tryptophan from indole and L-serine,trpB
+14,317619,Prochlorothrix hollandica PCC9006,Tryptophan synthase beta chain; The beta subunit is responsible for the synthesis of L- tryptophan from indole and L-serine,trpB
+15,317655,Sphingopyxis alaskensis RB2256,Tryptophan synthase beta chain; The beta subunit is responsible for the synthesis of L- tryptophan from indole and L-serine,trpB
+16,317936,Nostoc sp. PCC7107,Tryptophan synthase beta chain; The beta subunit is responsible for the synthesis of L- tryptophan from indole and L-serine,trpB
+17,318161,Shewanella denitrificans OS217,Tryptophan synthase beta chain; The beta subunit is responsible for the synthesis of L- tryptophan from indole and L-serine,trpB
+18,318167,Shewanella frigidimarina NCIMB 400,Tryptophan synthase beta chain; The beta subunit is responsible for the synthesis of L- tryptophan from indole and L-serine,trpB
+19,318424,Mycobacterium rufum,Tryptophan synthase beta chain; The beta subunit is responsible for the synthesis of L- tryptophan from indole and L-serine,trpB
+20,318464,Clostridium sulfidigenes,Tryptophan synthase beta chain; The beta subunit is responsible for the synthesis of L- tryptophan from indole and L-serine,trpB
+21,318586,Paracoccus denitrificans PD1222,Tryptophan synthase beta chain; The beta subunit is responsible for the synthesis of L- tryptophan from indole and L-serine,trpB
+22,319003,Bradyrhizobium sp. WSM1253,Tryptophan synthase beta chain; The beta subunit is responsible for the synthesis of L- tryptophan from indole and L-serine,trpB
+23,319224,Shewanella putrefaciens CN-32,Tryptophan synthase beta chain; The beta subunit is responsible for the synthesis of L- tryptophan from indole and L-serine,trpB
+24,319236,Nonlabens sediminis,Tryptophan synthase beta chain; The beta subunit is responsible for the synthesis of L- tryptophan from indole and L-serine,trpB
+25,319795,Deinococcus geothermalis DSM11300,Tryptophan synthase beta chain; The beta subunit is responsible for the synthesis of L- tryptophan from indole and L-serine,trpB
+26,321327,Synechococcus sp. JA-3-3Ab,Tryptophan synthase beta chain; The beta subunit is responsible for the synthesis of L- tryptophan from indole and L-serine,trpB
+27,321332,Synechococcus sp. JA-2-3Ba(2-13),Tryptophan synthase beta chain; The beta subunit is responsible for the synthesis of L- tryptophan from indole and L-serine,trpB
+28,321846,Pseudomonas simiae,Tryptophan synthase beta chain; The beta subunit is responsible for the synthesis of L- tryptophan from indole and L-serine,trpB
+29,321955,Brevibacterium linens BL2,Tryptophan synthase beta chain; The beta subunit is responsible for the synthesis of L- tryptophan from indole and L-serine,trpB
+30,322159,Streptococcus thermophilus LMD-9,Tryptophan synthase beta chain; The beta subunit is responsible for the synthesis of L- tryptophan from indole and L-serine,trpB
+31,322710,Azotobacter vinelandii DJ,Tryptophan synthase beta chain; The beta subunit is responsible for the synthesis of L- tryptophan from indole and L-serine,trpB
+32,323097,Nitrobacter hamburgensis X14,Tryptophan synthase beta chain; The beta subunit is responsible for the synthesis of L- tryptophan from indole and L-serine,trpB
+33,323098,Nitrobacter winogradskyi Nb-255,Tryptophan synthase beta chain; The beta subunit is responsible for the synthesis of L- tryptophan from indole and L-serine,trpB
+34,323261,Nitrosococcus oceani ATCC19707,Tryptophan synthase beta chain; The beta subunit is responsible for the synthesis of L- tryptophan from indole and L-serine,trpB
+35,323848,Nitrosospira multiformis ATCC25196,Tryptophan synthase beta chain; The beta subunit is responsible for the synthesis of L- tryptophan from indole and L-serine,trpB
+36,323850,Shewanella loihica PV-4,Tryptophan synthase beta chain; The beta subunit is responsible for the synthesis of L- tryptophan from indole and L-serine,trpB
+37,325777,Xanthomonas axonopodis pv. vasculorum,Tryptophan synthase beta chain; The beta subunit is responsible for the synthesis of L- tryptophan from indole and L-serine,trpB
+38,326297,Shewanella amazonensis SB2B,Tryptophan synthase beta chain; The beta subunit is responsible for the synthesis of L- tryptophan from indole and L-serine,trpB
+39,326423,Bacillus amyloliquefaciens subsp. plantarum str. FZB42,Tryptophan synthase beta chain; The beta subunit is responsible for the synthesis of L- tryptophan from indole and L-serine,trpB
+40,326442,Pseudoalteromonas haloplanktis TAC125,Tryptophan synthase beta chain; The beta subunit is responsible for the synthesis of L- tryptophan from indole and L-serine,trpB
+41,329726,Acaryochloris marina MBIC11017,Tryptophan synthase beta chain; The beta subunit is responsible for the synthesis of L- tryptophan from indole and L-serine,trpB
+42,330214,Candidatus Nitrospira defluvii,Tryptophan synthase beta chain; The beta subunit is responsible for the synthesis of L- tryptophan from indole and L-serine,trpB
+43,331635,Chlamydophila pecorum E58,annotation not available,trpB
+44,331869,alpha proteobacterium BAL199,Tryptophan synthase beta chain; The beta subunit is responsible for the synthesis of L- tryptophan from indole and L-serine,trpB
+45,335283,Nitrosomonas eutropha C91,Tryptophan synthase beta chain; The beta subunit is responsible for the synthesis of L- tryptophan from indole and L-serine,trpB
+46,335659,Bradyrhizobium sp. S23321,Tryptophan synthase beta chain; The beta subunit is responsible for the synthesis of L- tryptophan from indole and L-serine,trpB
+47,335992,Candidatus Pelagibacter ubique HTCC1062,Tryptophan synthase beta chain 1; The beta subunit is responsible for the synthesis of L- tryptophan from indole and L-serine,trpB
+48,337191,Gordonia sp. KTR9,Tryptophan synthase beta chain; The beta subunit is responsible for the synthesis of L- tryptophan from indole and L-serine,trpB
+49,339670,Burkholderia ambifaria AMMD,Tryptophan synthase beta chain; The beta subunit is responsible for the synthesis of L- tryptophan from indole and L-serine,trpB
+50,339671,Actinobacillus succinogenes 130Z,Tryptophan synthase beta chain; The beta subunit is responsible for the synthesis of L- tryptophan from indole and L-serine,trpB

@@ -1,0 +1,53 @@
+{% load static %} 
+<div> 
+    {% if envoi %}
+
+    {% if inConstruct %}
+    <p> <b> this model is under construction. Please try again later. </b></p>
+    {% else %}
+    <p>
+        <b><u>Results</u></b><br />
+         <b>Model: </b> <i>{{ modelChoice }} </>  | 
+         <b>Serivce: </b> <i>{{ service }} </> 
+    </p>
+    <hr/>
+    {% if feature %}
+
+	<p> <b> CIA, RCSU :</b> {{ CIARCSUFeat }}</p>
+	<p> <b> GC content:</b> {{ GCFeat }}</p>
+	<p> <b> Gene Length:</b> {{ GeneLength }}</p>
+	<p> <b> Codon Frequence:</b> {{ KmerFeat }}</p>
+	<p> <b> Amino Acid Composition, Length protein:</b> {{ ProteinFeat }}</p>
+    {% endif %}
+    {% if prediction  %}
+    {% if isEssential  %}
+    <p> <b> Essentiality: <i>This gene is Essential</i></b> </p>
+      {% else %}
+      <p> <b> Essentiality: <i>This gene is Not Essential our model</i></b> </p>
+    {% endif %}
+    <p> <b> Essentialy Score:</b> {{ EssentialGeneProbability }}</p>
+    <p> <b> Not Essentialy Score:</b> {{ NonEssentialGeneProbability }}</p>
+    
+
+    {% endif %}
+    <hr/>
+<!--
+    <p> <b> Sequence Gene submit:</b> 
+        <div class="form-group row">
+            <div class="col-sm-9">
+            <textarea class="form-control" id="geneSequence" name="geneSequence" rows="3">{{ geneSequence }}</textarea>
+            </div>
+        </div>
+    </p>
+    <p> <b> Sequence Protein submit:</b> 
+        <div class="form-group row">
+            <div class="col-sm-9">
+            <textarea class="form-control" id="geneSequence" name="geneSequence" rows="3">{{ proteinSequence }}</textarea>
+            </div>
+        </div>
+    </p>
+-->
+    {% endif %}
+
+    {% endif %}
+</div>

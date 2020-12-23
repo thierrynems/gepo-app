@@ -1,0 +1,1 @@
+#    TaxaId    Species    gene_locus    Protein Name    Model    E_score    NE_score    Decision    NTseq    AAseq

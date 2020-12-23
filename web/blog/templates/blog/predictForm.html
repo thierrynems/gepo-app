@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block css %}
+    <link href="{% static 'css/users.css' %}" rel="stylesheet">
+{% endblock %}
+{% block js %}
+<script language="javascript">
+//fonction de soumission du formulaire
+function submitForm(){
+    $('#results').html("");
+    proteinValide=new RegExp("^[ARNDCQEGHILKMFPSTWYVAarndcqeghilkmfpstwyv]+$");
+    geneValide=new RegExp("^[ATCGatcg]+$");
+    geneSequence=document.getElementById('geneSequence').value;
+    proteinSequence=document.getElementById('proteinSequence').value;
+    modelSelect=document.getElementById('modelSelect').value;
+    actionSelect=document.getElementById('actionSelect').value;
+    if(!geneValide.test(geneSequence))$('#errorGene').html('<img src="{% static 'ko.jpg' %}" alt="KO" width="15" height="15" align="center" /> ');
+    else $('#errorGene').html('<img src="{% static 'ok.png' %}" alt="OK" width="15" height="15" align="center" /> ');
+    if(!proteinValide.test(proteinSequence))$('#errorProt').html('<img src="{% static 'ko.jpg' %}" alt="KO" width="15" height="15" align="center" /> ');
+    else $('#errorProt').html('<img src="{% static 'ok.png' %}" alt="OK" width="15" height="15" align="center" /> ');
+    if(modelSelect!="" && actionSelect!="" && geneValide.test(geneSequence) && proteinValide.test(proteinSequence)){
+            $('#results').html('<img src="{% static 'loading.gif' %}" alt="loading...." width="200" height="200" align="center" /> ');
+            $.ajax({
+            type:'POST',
+            dataType : 'html',
+            url:'{% url "ajaxpredictform" %}',
+            data:{
+                modelSelect:$('#modelSelect').val(),
+                actionSelect:$('#actionSelect').val(),
+                geneSequence:$('#geneSequence').val(),
+                proteinSequence:$('#proteinSequence').val(),
+                csrfmiddlewaretoken:'{{ csrf_token}}',
+                action: 'post',
+            },
+            success:function(data){
+                //document.getElementById("post-form").reset();
+                //$("results").prepend(data)
+                $('#results').html(data)
+            },
+            error : function(xhr,errmsg,err) {
+            console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+        $('#results').html("Error :"+xhr.status);
+        }
+        });
+        }else{
+            $('#results').html("Error: invalid data please check - please check your fill");
+            alert("Error: please check your fill");
+
+        }
+  
+}
+</script>
+{% endblock %}
+{% block content %}
+    <div class="jumbotron">
+        <div class="container">
+            <h5 class="display-5">Please complete the form below to predict essential genes from sequences </h5>
+            <div class="row">
+            <div class="col-sm-6">
+            
+            <form method="POST" id="post-form" > <!--action="{% url 'predictform' %}" method="POST" -->
+            <input type="hidden" id="token" value="{% csrf_token %}" />
+                
+                <div class="form-group row">
+                    <div class="col-sm-4"><label for="modelselection">Select Model</label><span id="errorModel"></span></div>
+                    <div class="col-sm-8">
+                        <select id="modelSelect" class="form-control" name="modelSelect" required>
+                            <option value="">choice a model...</option>
+                            {% for code, nom in modelDict.items %}
+                            <option value="{{ code }}">{{ nom }}</option>
+                            {% endfor %}                             
+                          </select>
+                    </div>
+                     
+                  </div>
+                  <div class="form-group row">
+                    <div class="col-sm-4"><label for="actionselestcion">Select Service</label><span  id="errorService"></span></div>                    
+                    <div class="col-sm-8">
+                        <select id="actionSelect" class="form-control" name="actionSelect" required>
+                            <option value="">choice Service...</option>
+                            {% for code, nom in actionDict.items %}
+                            <option value="{{ code }}">{{ nom }}</option>
+                            {% endfor %} 
+                          </select>
+                    </div>
+                     
+                  </div>
+
+                <div class="form-group row">
+                    <div class="col-sm-4"><label for="geneseq">gene Sequence</label><span id="errorGene"></span></div>
+                    <div class="col-sm-8">
+                    <textarea class="form-control" id="geneSequence" name="geneSequence" rows="3" required onblur="checkSequence('geneSequence','gene')">{{ defaultGeneSeq }}</textarea>
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <div class="col-sm-4"><label for="proteinseq">protein Sequence</label> <span id="errorProt"></span></div>
+                    <div class="col-sm-8">
+                    <textarea class="form-control" id="proteinSequence" name="proteinSequence" rows="3" required onblur="checkSequence('proteinSequence','prot')">{{ defaultProtSeq }}</textarea>
+                    </div>
+                  </div>
+                <button type="button" class="btn btn-primary" onclick="submitForm()" >Check</button> 
+                <button type="reset" class="btn btn-primary" >Reset</button>
+              </form>
+            </div>
+            <div class="col-sm-6" id="results"> 
+                
+            </div>
+        </div>
+        </div>
+    </div>
+    
+{% endblock %}

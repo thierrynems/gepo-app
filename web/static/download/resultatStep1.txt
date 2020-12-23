@@ -1,0 +1,2 @@
+#    taxaId  Species Annotation  Protein Name  Protein Size  Protein External ID
+1    287  Pseudomonas aeruginosa Tryptophan synthase alpha chain; The alpha subunit is responsible for the aldol cleavage of indoleglycerol phosphate to indole and glyceraldehyde 3- phosphate; Belongs to the TrpA family  trpA    268    287.DR97_2989
