@@ -663,23 +663,25 @@ def ajaxsearchlistprotein(request):
 #vue du formulaire recherche organisms
 def searchorganism(request):
     #load dataset 
-    url="http://3.133.132.243:9082/deeply/speciesList"
-    #r = requests.post(url, data=data, params=args, headers=header, verify=False)
-    r = requests.get(url)
-    species=r.json()
-    allSpecies=species
-    #load dataset 
-    #dataset="blog/datasets/species.v11.0.txt"
-    #df = pandas.read_csv(dataset,sep= '\t', header = 0)
+    
+    #url="http://3.133.132.243:9082/deeply/speciesList"
 
-    #row and col
-    #row,col = df.shape
+    url="http://195.24.221.74:5001/searchkeggorganis"
+    species=dict()
+    try: 
+        r = requests.get(url)
+        species=r.json()
+        allSpecies=species 
+    except Exception as err:
+        print("error: " + str(err))
+
     #init dictionary of organism
-    organismDict=dict()
-    for key, oneSpecies in species.items():
-        specieId=oneSpecies['species_id']
-        specieName=oneSpecies['official_name']
-        organismDict[specieId]=specieName
+    
+    #organismDict=dict()
+    #for key, oneSpecies in species.items():
+    #    specieId=oneSpecies['species_id']
+    #    specieName=oneSpecies['official_name']
+    #    organismDict[specieId]=specieName
     #text="bonjour"
 
     # Quoiqu'il arrive, on affiche la page du formulaire.
@@ -692,7 +694,20 @@ def ajaxsearchorganism(request):
         if action =='step1': 
             organism = request.POST.get('organism', None)
             step=action
-            listProtein=dict() 
+            actionDict={"feature":"Feature Engeneering","prediction":"Prediction"}
+            organism_code = request.POST.get('organism_code', None)
+            url="http://3.133.132.243:9082/deeply/getProteinListEpath"
+            data = {'organism_code': organism_code}
+            args = {'organism_code': organism_code}
+            header = {'Content-type': 'application/x-www-form-urlencoded; charset=utf-8'}
+            listProtein=dict()
+            try:
+                r = requests.post(url, data=data, params=args, headers=header, verify=False)
+                listProtein=r.json()
+            except Exception as err: 
+                print (err)
+
+            
 
     return render(request, 'blog/ajaxsearchorganism.html', locals())
 #predict by Text Mining

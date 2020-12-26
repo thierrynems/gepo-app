@@ -6,18 +6,36 @@
 {% endblock %}
 {% block js %}
 <script language="javascript">
+
+//dataTable  Step 2
+$(document).ready(function () {
+  $('#dtSpecies').DataTable();
+  $('.dataTables_length').addClass('bs-select');
+});
+//table step 2
+
 //fonction de soumission du formulaire
  function submitForm(){
 
-    organism=document.getElementById('idOrganism').value;
-    if(organism!="" ){
+    //organism=document.getElementById('idOrganism').value;
+
+    var listCheck=""
+    var checkbox =document.getElementsByTagName('input');
+    compteur=checkbox.length;
+    for (var i=0; i<compteur; i++){
+        if (checkbox[i].checked==true){
+            listCheck=checkbox[i].value;
+            }
+        }
+
+    if(listCheck!="" ){
             $('#content').html('<img src="{% static 'loading.gif' %}" alt="loading...." width="200" height="200" align="center" /> ');
             $.ajax({
             type:'POST',
             dataType : 'html',
             url:'{% url "ajaxsearchorganism" %}',
             data:{
-                organism:organism,
+                organism_code:listCheck,
                 csrfmiddlewaretoken:'{{ csrf_token}}',
                 action: 'step1',
             },
@@ -38,6 +56,67 @@
         }
   
 }
+
+function checkFormStep2(){
+
+    //get list of protein check 
+   /* var tableau =[];
+    var listCheck=""
+    var checkbox =document.getElementsByTagName('input');
+    compteur=checkbox.length;
+    for (var i=0; i<compteur; i++){
+        if (checkbox[i].checked==true){
+            tableau[i]=checkbox[i].value;
+            if(listCheck=="")listCheck=checkbox[i].value;
+            else listCheck=listCheck+";"+checkbox[i].value;
+            }
+        }
+    */
+    var listCheck=""
+    var checkbox =document.getElementsByTagName('input');
+    compteur=checkbox.length;
+    for (var i=0; i<compteur; i++){
+        if (checkbox[i].checked==true){
+            listCheck=checkbox[i].value;
+            }
+        }
+    
+    proteinName = $('#idProteinName').val();
+    specie = $('#idSpecie').val();
+    service = $('#actionSelect').val();
+    //proteinID=$('#proteinID').val();
+    //proteinExternalId=$('#proteinExternalId').val();
+    //alert(proteinID)
+    if(specie!="" && proteinName!="" && service!="" && listCheck!=""){
+        $('#content').html(""); //reset result content
+        $('#content').html('<img src="{% static 'loading.gif' %}" alt="loading...." width="200" height="200" align="center" /> ');
+            $.ajax({
+            type:'POST',
+            dataType : 'html',
+            url:'{% url "ajaxsearchlistprotein" %}',
+            data:{
+                proteinName:proteinName, 
+                specie:specie,
+                service:service,
+                listCheck:listCheck,
+                csrfmiddlewaretoken:'{{ csrf_token}}',
+                action: 'step2',
+            },
+            success:function(data){
+                //document.getElementById("post-form").reset();
+                //$("results").prepend(data)
+                $('#content').html(data)
+            },
+            error : function(xhr,errmsg,err) {
+            console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+        $('#content').html("Error :"+xhr.status+" Detail: "+ xhr.responseText);
+        }
+        });
+    }else{
+        alert("Error: please check your fill");
+    }
+    
+}
 </script>
 {% endblock %}
 {% block content %}
@@ -53,20 +132,34 @@
             <form method="POST" id="post-form" > <!--action="{% url 'predictform' %}" method="POST" -->
             <input type="hidden" id="token" value="{% csrf_token %}" />
               
-                  <div class="form-group row">
-                    <div class="col-sm-4"><label for="organism"></label>Select the organism<span id="errorOrganism"></span></div>
-                    <div class="col-sm-8">
-                        <select id="idOrganism" name="organism" class="selectpicker" data-live-search="true" data-width="fit" required> <!--class="form-control" -->
-                            <option value="" data-tokens="autodetect">autodetect</option>
-                            {% for taxaId, organism in organismDict.items %}
-                            <option value="{{ taxaId }}" data-tokens="{{ organism }}">{{ organism }}</option>
-                            {% endfor %}                             
-                          </select>
-                    </div>
-                     
-                  </div>
-                <button type="button" class="btn btn-primary" onclick="submitForm()" >Next</button> 
+<table id="dtSpecies" class="table table-striped table-bordered table-sm" cellspacing="0" width="100%">
+     <!-- <table class="table table-striped" width="60%">  -->
+      <thead>
+        <tr>
+          <th class="th-sm"> # </th>
+          <th class="th-sm">Check</th>
+          <th class="th-sm">TaxaId</th> 
+          <th class="th-sm">Species</th>
+          <th class="th-sm">#protein</th>
+          <th class="th-sm">Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for key, mySpecie in species.items %}
+        <tr>
+          <td>{{ key|add:"+1" }}</td>
+          <td><input  type="radio" id="chk_{{ mySpecie.organism_taxa }}" name="specie" value="{{ mySpecie.organism_code }}" class="form-check-input" onclick="test()" /></td>
+          <td>{{ mySpecie.organism_taxa }}</td>
+          <td>{{ mySpecie.organism_name }}</td>
+          <td></td>
+          <td>{{ mySpecie.organism_description }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+  
                 <button type="reset" class="btn btn-primary" >Reset</button>
+                <button type="button" class="btn btn-primary" onclick="submitForm()" >Next=> </button> 
               </form>
            <!-- <div class="col-sm-6" id="results"> 
                 
