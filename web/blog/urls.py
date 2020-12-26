@@ -19,5 +19,6 @@ urlpatterns = [
     path('displayapi',views.displayapi,name="displayapi"),
     path('displaycolab',views.displaycolab,name="displaycolab"),
     path('displaytutorial',views.displaytutorial,name="displaytutorial"),
+    path('ajaxpedicttextmining',views.ajaxpedicttextmining,name="ajaxpedicttextmining"),
 ]
 #path('',views.index,name="index"),

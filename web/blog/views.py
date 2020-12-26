@@ -740,3 +740,32 @@ def addition(request, nombre1, nombre2):
 
     # Retourne nombre1, nombre2 et la somme des deux au tpl
     return render(request, 'blog/addition.html', locals())
+
+#ajax predict by textmining
+def ajaxpedicttextmining(request):
+
+    if request.method == 'POST':
+        action = request.POST.get('action', None)
+        if action =='step1':
+            elementid = request.POST.get('elementid', None)
+            database = request.POST.get('database', None)
+            step=action
+            listProtein=dict()
+            if database == 'pmc':
+                # load dataset
+                url = "https://www.ncbi.nlm.nih.gov/research/pubtator-api/publications/export/biocjson?pmcids="+elementid
+                # r = requests.post(url, data=data, params=args, headers=header, verify=False)
+                r = requests.get(url)
+                pmc = r.json()
+                allPMC = pmc
+                # get pmc
+            elif database == 'pubmed':
+                # load dataset
+                url = "https://www.ncbi.nlm.nih.gov/research/pubtator-api/publications/export/biocjson?pmids="+elementid
+                # r = requests.post(url, data=data, params=args, headers=header, verify=False)
+                r = requests.get(url)
+                pubmed = r.json()
+                allPUBMED = pubmed
+                # Get Pubmed
+
+    return render(request, 'blog/ajaxpedicttextmining.html', locals())
