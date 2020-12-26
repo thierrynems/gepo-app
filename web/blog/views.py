@@ -539,6 +539,9 @@ def ajaxsearchlistprotein(request):
                     sequences=r.json()
                     sequenceAA=sequences["aa"]
                     sequenceNT=sequences["nt"]
+                    #convertir en majuscule
+                    sequenceNT=sequenceNT.upper()
+                    sequenceAA=sequenceAA.upper()
                 except Exception as e: 
                     sequenceAA=""
                     sequenceNT=""
@@ -562,40 +565,29 @@ def ajaxsearchlistprotein(request):
                         GeneLength=feauturePredict['GeneLength']['DEG100011']
                         KmerFeat=feauturePredict['KmerFeat']['DEG100011']
                         ProteinFeat=feauturePredict['ProteinFeat']['DEG100011']
+                        lineFeatcsv=str(GeneLength)+","+str(GCFeat)+","+",".join([str(_) for _ in CIARCSUFeat])+","+",".join([str(_) for _ in KmerFeat])+","+",".join([str(_) for _ in ProteinFeat])+"\n"
+                        lineFeattxt=str(GeneLength)+"  "+str(GCFeat)+" "+" ".join([str(_) for _ in CIARCSUFeat])+" "+" ".join([str(_) for _ in KmerFeat])+"    "+" ".join([str(_) for _ in ProteinFeat])+"\n"
+                        #write to file
+                        fileFeatcsv.write(str(lineFeatcsv))
+                        fileFeattxt.write(str(lineFeattxt))
+
                     except Exception as e: 
                         CIARCSUFeat=""
                         GCFeat=""
                         GeneLength=""
                         KmerFeat=""
                         ProteinFeat=""
-                    lineFeatcsv=str(GeneLength)+","+str(GCFeat)+","+",".join([str(_) for _ in CIARCSUFeat])+","+",".join([str(_) for _ in KmerFeat])+","+",".join([str(_) for _ in ProteinFeat])+"\n"
-                    lineFeattxt=str(GeneLength)+"  "+str(GCFeat)+" "+" ".join([str(_) for _ in CIARCSUFeat])+" "+" ".join([str(_) for _ in KmerFeat])+"    "+" ".join([str(_) for _ in ProteinFeat])+"\n"
-                    #write to file
-                    fileFeatcsv.write(str(lineFeatcsv))
-                    fileFeattxt.write(str(lineFeattxt))
-
+                        fileFeatcsv.write(str(e))
+                        fileFeattxt.write(str(e))
+                    
                     for  modelSelect, valueModel in modelDict.items():
                         modelResult=dict()
-                        sequenceNT=sequenceNT.upper()
-                        sequenceAA=sequenceAA.upper()
+                        #sequenceNT=sequenceNT.upper()
+                        #sequenceAA=sequenceAA.upper()
                         data = {'geneSeq': sequenceNT, 'protSeq': sequenceAA,'model':modelSelect}
                         args = {'geneSeq': sequenceNT, 'protSeq': sequenceAA,'model':modelSelect}
-                        try: 
-                            r = requests.post(urlFeature, data=data, params=args, headers=header, verify=False)
-                            ##########################feature engineering ####################################
-                            feauturePredict=r.json()
-                            CIARCSUFeat=feauturePredict['CIARCSUFeat']['DEG100011']
-                            GCFeat=feauturePredict['GCFeat']['DEG100011']
-                            GeneLength=feauturePredict['GeneLength']['DEG100011']
-                            KmerFeat=feauturePredict['KmerFeat']['DEG100011']
-                            ProteinFeat=feauturePredict['ProteinFeat']['DEG100011']
-                        except Exception as e: 
-                            CIARCSUFeat=""
-                            GCFeat=""
-                            GeneLength=""
-                            KmerFeat=""
-                            ProteinFeat=""
-                            ###############################predict ##########################################
+                        
+                        ###############################predict ##########################################
                         try: 
                             r = requests.post(urlPredict, data=data, params=args, headers=header, verify=False)
                             resultPredict=r.json()
@@ -664,7 +656,7 @@ def ajaxsearchlistprotein(request):
 def searchorganism(request):
     #load dataset 
     
-    #url="http://3.133.132.243:9082/deeply/speciesList"
+    urlaws="http://3.133.132.243:9082/deeply/getKeggSpecie"
 
     url="http://195.24.221.74:5001/searchkeggorganis"
     species=dict()
@@ -673,7 +665,11 @@ def searchorganism(request):
         species=r.json()
         allSpecies=species 
     except Exception as err:
-        print("error: " + str(err))
+        try: 
+            r = requests.get(urlaws)
+            species=r.json()
+        except Exception as error: 
+            print("error: " + str(err))
 
     #init dictionary of organism
     

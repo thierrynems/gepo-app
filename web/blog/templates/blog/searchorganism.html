@@ -60,19 +60,32 @@ $(document).ready(function () {
 function checkFormStep2(){
 
     //get list of protein check 
-   /* var tableau =[];
+    //var tableau =[];
     var listCheck=""
     var checkbox =document.getElementsByTagName('input');
+    var listProteinName=""
+    var listGeneLocus=""
     compteur=checkbox.length;
     for (var i=0; i<compteur; i++){
         if (checkbox[i].checked==true){
-            tableau[i]=checkbox[i].value;
-            if(listCheck=="")listCheck=checkbox[i].value;
-            else listCheck=listCheck+";"+checkbox[i].value;
+            //tableau[i]=checkbox[i].value;
+            alldata=checkbox[i].value;
+            tabData=alldata.split("|");
+            proteiname=tabData[0]
+            geneLocus=tabData[1]
+            if(listProteinName==""){
+                listProteinName=proteiname;
+                listGeneLocus=geneLocus
             }
+            else {
+                listProteinName=listProteinName+','+proteiname;
+                listGeneLocus=listGeneLocus+','+geneLocus
+
+            }
+          }
         }
-    */
-    var listCheck=""
+    //{{ myProtein.gene_name }}|{{ organism_code }}:{{ myProtein.gene_locus }}
+   /* var listCheck=""
     var checkbox =document.getElementsByTagName('input');
     compteur=checkbox.length;
     for (var i=0; i<compteur; i++){
@@ -80,10 +93,13 @@ function checkFormStep2(){
             listCheck=checkbox[i].value;
             }
         }
-    
+    */
     proteinName = $('#idProteinName').val();
     specie = $('#idSpecie').val();
     service = $('#actionSelect').val();
+    organism_code = $('#organism_code').val();
+    listCheck=listProteinName+'|'+organism_code+':'+listGeneLocus;
+    //alert(listCheck);
     //proteinID=$('#proteinID').val();
     //proteinExternalId=$('#proteinExternalId').val();
     //alert(proteinID)
@@ -95,7 +111,7 @@ function checkFormStep2(){
             dataType : 'html',
             url:'{% url "ajaxsearchlistprotein" %}',
             data:{
-                proteinName:proteinName, 
+                proteinName:listProteinName, 
                 specie:specie,
                 service:service,
                 listCheck:listCheck,
@@ -116,6 +132,23 @@ function checkFormStep2(){
         alert("Error: please check your fill");
     }
     
+}
+//function check number of protein check 
+function numberCheck(idchechbox){
+    var numberTotalCheck=5    
+    var checkbox =document.getElementsByTagName('input');
+    var numbercheck=0;
+    compteur=checkbox.length;
+    for (var i=0; i<compteur; i++){
+        if (checkbox[i].checked==true){
+            numbercheck++;
+          }
+        }
+        //alert(idchechbox)
+    if(numbercheck>numberTotalCheck){
+       document.getElementById(idchechbox).checked = false;
+       alert("you can only check "+ numberTotalCheck +" proteins")
+     }
 }
 </script>
 {% endblock %}
@@ -148,7 +181,7 @@ function checkFormStep2(){
         {% for key, mySpecie in species.items %}
         <tr>
           <td>{{ key|add:"+1" }}</td>
-          <td><input  type="radio" id="chk_{{ mySpecie.organism_taxa }}" name="specie" value="{{ mySpecie.organism_code }}" class="form-check-input" onclick="test()" /></td>
+          <td><input  type="radio" id="chk_{{ mySpecie.organism_taxa }}" name="specie" value="{{ mySpecie.organism_code }}" class="form-check-input" /></td>
           <td>{{ mySpecie.organism_taxa }}</td>
           <td>{{ mySpecie.organism_name }}</td>
           <td></td>

@@ -18,6 +18,7 @@ $(document).ready(function () {
     <div class="col-sm-8">
         <input type="text" id="idSpecie" value="{{ organism_code }}"  readonly="readonly" class="form-control" />
         <input type="hidden" id="idProteinName" value="{{ organism_code }}"  readonly="readonly" class="form-control" />
+        <input type="hidden" id="organism_code" value="{{ organism_code }}"  readonly="readonly" class="form-control" />
     </div>
   </div>
   
@@ -50,7 +51,7 @@ $(document).ready(function () {
         {% for key, myProtein in listProtein.items %}
         <tr>
           <td>{{ key|add:"+1" }}</td>
-          <td><input  type="radio" id="chk_{{ myProtein.gene_locus }}" name="specie" value="{{ myProtein.gene_name }}|{{ organism_code }}:{{ myProtein.gene_locus }}" class="form-check-input" onclick="test()" /></td>
+          <td><input  type="checkbox" id="chk_{{ myProtein.gene_name }}" name="specie" value="{{ myProtein.gene_name }}|{{ myProtein.gene_locus }}" class="form-check-input" onclick='numberCheck("chk_{{ myProtein.gene_name }}")' /></td>
           <td>{{ myProtein.gene_locus }}</td>
           <td>{{ myProtein.gene_name }}</td>
           <td></td>
