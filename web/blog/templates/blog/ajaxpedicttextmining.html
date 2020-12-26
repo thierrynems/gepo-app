@@ -1,0 +1,21 @@
+{% load static %}
+{% if action == step %}
+    <div class="jumbotron">
+         <div class="container" id='content'>
+            <h3 class="display-5">Predict from text mining/ Step 2 </h3>
+                <br />
+            <form method="POST" id="post-form" > <!--action="{% url 'predictform' %}" method="POST" -->
+            <input type="hidden" id="token" value="{% csrf_token %}" />
+                  <div class="form-group row">
+                    <!--<div class="col-sm-4"><label for="organism"></label>DataBase<span id="errorOrganism"></span></div>-->
+                    <div class="col-sm-8">
+                        {{ allPUBMED }}
+                        {{ allPMC }}
+                    </div>
+                  </div>
+                <button type="button" class="btn btn-primary" onclick="submitForm()" >Next</button>
+                <button type="reset" class="btn btn-primary" >Reset</button>
+              </form>
+        </div>
+    </div>
+{% endif %}
