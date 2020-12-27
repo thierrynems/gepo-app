@@ -454,7 +454,7 @@ def ajaxsearchlistprotein(request):
             number_protein_query=len(tabProteinList)
             #write in file 
             filename="resultatListProteinStep1"
-            currentfileCSV=os.path.join(baseDir, filename+'.csv')
+            currentfileCSV=os.path.join(baseDir, filename+'resultDict.csv')
             currentfileTXT=os.path.join(baseDir, filename+'.txt')
             headercsv="#,TaxaId,Species,#Protein/Query,Total protein of organism,Mapped item\n"
             headertxt="#    TaxaId    Species    #Protein/Query    Total protein of organism    Mapped item\n"
@@ -772,7 +772,7 @@ def ajaxpedicttextmining(request):
                 # r = requests.post(url, data=data, params=args, headers=header, verify=False)
                 r = requests.get(url)
                 pmc = r.json()
-                allPMC = pmc
+                allPUBMEDPMC = pmc
                 # get pmc
             elif database == 'pubmed':
                 # load dataset
@@ -780,7 +780,53 @@ def ajaxpedicttextmining(request):
                 # r = requests.post(url, data=data, params=args, headers=header, verify=False)
                 r = requests.get(url)
                 pubmed = r.json()
-                allPUBMED = pubmed
+                allPUBMEDPMC = pubmed
                 # Get Pubmed
+            # Parcours du JSON
+            Title = allPUBMEDPMC["passages"][0]["text"]
+            if database == 'pubmed':
+                Doi = ""
+            else:
+                Doi = allPUBMEDPMC["passages"][0]["infons"]["article-id_doi"]
+            Authors = allPUBMEDPMC["passages"][0]["infons"]["authors"]
+            Year = allPUBMEDPMC["passages"][0]["infons"]["year"]
+            if database == 'pubmed':
+                Articleid_pmid = ""
+            else:
+                Articleid_pmid = allPUBMEDPMC["passages"][0]["infons"]["article-id_pmid"]
+            if database == 'pubmed':
+                Articleid_pmc = ""
+            else:
+                Articleid_pmc = allPUBMEDPMC["passages"][0]["infons"]["article-id_pmc"]
+            index = 0
+            tabresult = dict()
+
+            for value in allPUBMEDPMC["passages"]:
+                result = dict()
+                gene = ""
+                species = ""
+                for value1 in value["annotations"]:
+                    if value1["infons"]["type"] == "Gene":
+                        gene = value1["text"]
+                    if value1["infons"]["type"] == "Species":
+                        species = value1["text"]
+                    if gene != "" and species != "":
+                        result['gene'] = gene
+                        result['species'] = species
+                        # test de l'existance de l'élément
+                        verif = 0
+                        if index > 0:
+                            for test in tabresult:
+                                if tabresult[test]['gene'] == gene and tabresult[test]['species'] == species:
+                                    verif = 1
+                        if verif == 0:
+                            tabresult[index] = result
+                            index = index + 1
+        elif action == 'step2':
+            step2 = action
+            PREDICTION_VALUE = dict()
+            gene = request.POST.get('gene', None)
+            species = request.POST.get('species', None)
+            PREDICTION_VALUE = {'gene': gene, 'species': species}
 
     return render(request, 'blog/ajaxpedicttextmining.html', locals())
