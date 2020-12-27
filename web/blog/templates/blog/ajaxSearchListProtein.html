@@ -155,22 +155,32 @@ $(document).ready(function () {
     {% endfor %}
 <table>
   <tr>
+    <td></td>
+    <td colspan="2"><b>Prediction</b></td>
+    <td></td>
+    <td colspan="2"><b>Feature Eng. </b></td>
+  </tr>
+  <tr>
     <td><button type="button" class="btn btn-primary" onclick="" > <= Previous </button></td>
     <td>
       <a href="{% static 'download/predictResultListProtein.csv' %} "  target="_blank" >
-        <button type="button" class="btn btn-secondary" onclick="" > Download Prediction(csv) </button> 
-      </a>
-      <a href="{% static 'download/predictResultListProtein.txt' %}"  target="_blank">
-        <button type="button" class="btn btn-secondary" onclick="" > Download Prediction(txt) </button> 
+        <img src="{% static 'csv.png' %}" alt="csv" width="60" height="60" align="center" /> 
       </a>
     </td>
-      
+    <td>
+      <a href="{% static 'download/predictResultListProtein.txt' %}"  target="_blank">
+       <img src="{% static 'txt.png' %}" alt="txt" width="60" height="60" align="center" /> 
+      </a>
+    </td>
+    <td> | </td>
     <td>
       <a href="{% static 'download/FeatureResultListProtein.csv' %} "  target="_blank" >
-        <button type="button" class="btn btn-secondary" onclick="" > Download Feature(csv) </button> 
+        <img src="{% static 'csv.png' %}" alt="csv" width="60" height="60" align="center" /> 
       </a>
+    </td>
+    <td>
       <a href="{% static 'download/FeatureResultListProtein.txt' %}"  target="_blank">
-        <button type="button" class="btn btn-secondary" onclick="" > Download Feature(txt) </button> 
+        <img src="{% static 'txt.png' %}" alt="txt" width="60" height="60" align="center" />
       </a>
     </td>
   </tr>
