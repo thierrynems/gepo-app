@@ -40,6 +40,60 @@
         }
   
 }
+// Fonction de soumission de formulaire Step2
+function submitFormStep2(){
+    var speciesgenes="";
+    var checkbox =document.getElementsByTagName('input');
+    compteur=checkbox.length;
+    for (var i=0; i<compteur; i++){
+        if (checkbox[i].checked==true){
+            speciesgenes=checkbox[i].value;
+            }
+        }
+
+    if(speciesgenes!="" ){
+            tabspeciesgenes=speciesgenes.split("_");
+            var gene=tabspeciesgenes[0];
+            var species=tabspeciesgenes[1];
+            $('#content').html('<img src="{% static 'loading.gif' %}" alt="loading...." width="200" height="200" align="center" /> ');
+            $.ajax({
+            type:'POST',
+            dataType : 'html',
+            url:'{% url "ajaxpedicttextmining" %}',
+            data:{
+                gene:gene,
+                species:species,
+                csrfmiddlewaretoken:'{{ csrf_token}}',
+                action: 'step2',
+            },
+            success:function(data){
+                //document.getElementById("post-form").reset();
+                //$("results").prepend(data)
+                $('#content').html(data)
+            },
+            error : function(xhr,errmsg,err) {
+            console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+        $('#content').html("Error :"+xhr.status);
+        }
+        });
+        }else{
+            //$('#content').html("Error: invalid data please check - please check your fill");
+            alert("Error: please check your fill");
+
+        }
+
+}
+//Fonction de chargement des examples
+function setexample(t){
+    if(t==1){//PMC Example
+        document.getElementById('elementid').value="PMC6982432";
+        document.getElementById('database').value="pmc";
+    }
+    if(t==2){//PM Example
+        document.getElementById('elementid').value="28483578";
+        document.getElementById('database').value="pubmed";
+    }
+}
 </script>
 {% endblock %}
 {% block content %}
@@ -63,6 +117,13 @@
                                     </select>
                                 </td>
                                 <td><input type="text" name="elementid" id="elementid" placeholder="PmcID/PubMedID/PmID"></td>
+                            </tr>
+                        </table>
+                        <table border="0">
+                            <tr>
+                                <td align="left"><a href="#" onclick="setexample(1)">PMCIDexample</a></td>
+                                <td></td>
+                                <td align="right"><a href="#" onclick="setexample(2)">PMIDexample</a></td>
                             </tr>
                         </table>
                     </div>
