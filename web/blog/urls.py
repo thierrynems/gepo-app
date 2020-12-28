@@ -16,6 +16,7 @@ urlpatterns = [
     path('ajaxsearchorganism',views.ajaxsearchorganism,name="ajaxsearchorganism"),
     path('predicttextmining',views.predicttextmining,name="predicttextmining"),
     path('loadmodel',views.loadmodel,name="loadmodel"),
+    path('ajaxloadmodel',views.ajaxloadmodel,name="ajaxloadmodel"),
     path('displayapi',views.displayapi,name="displayapi"),
     path('displaycolab',views.displaycolab,name="displaycolab"),
     path('displaytutorial',views.displaytutorial,name="displaytutorial"),
