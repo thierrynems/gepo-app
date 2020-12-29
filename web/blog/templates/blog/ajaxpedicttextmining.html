@@ -48,6 +48,7 @@
                                   <th class="th-sm"></th>
                                   <th class="th-sm">Genes</th>
                                   <th class="th-sm">Species</th>
+                                  <th class="th-sm">TaxaID</th>
                                 </tr>
                               </thead>
                               <tbody>
@@ -55,9 +56,10 @@
                                 <tr>
                                   <td> {{ key|add:"+1" }} </td>
                                   <td></td>
-                                  <td><input  type="radio" id="chk_{{ key|add:'+1' }}" name="speciegene" value="{{ mySpecieGene.gene }}_{{ mySpecieGene.species }}" class="form-check-input" onclick="test()" /> </td>
+                                  <td><input  type="checkbox" id="chk_{{ key|add:'+1' }}" name="speciegene" value="{{ mySpecieGene.gene }}_{{ mySpecieGene.species }}_{{ mySpecieGene.taxaid }}" class="form-check-input" onclick="test()" /> </td>
                                   <td>{{ mySpecieGene.gene }}</td>
                                   <td>{{ mySpecieGene.species }}</td>
+                                  <td>{{ mySpecieGene.taxaid }}</td>
                                 </tr>
                                 {% endfor %}
                             </tbody>
