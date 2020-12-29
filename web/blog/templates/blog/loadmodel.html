@@ -38,6 +38,49 @@
         }
   
 }
+
+///////////////script ajax to load ower model 
+$(document).ready(function (e) {
+        $('#upload').on('click', function () {
+            var form_data = new FormData();
+            var ins = document.getElementById('multiFiles').files.length;
+            
+            if(ins == 0) {
+                $('#msg').html('<span style="color:red">Select at least one file</span>');
+                return;
+            }else{
+                $('#msg').html('');
+            }
+            
+            for (var x = 0; x < ins; x++) {
+                form_data.append("files[]", document.getElementById('multiFiles').files[x]);
+            }
+
+            $.ajax({
+                url: '{% url "ajaxloadmodel" %}', // point to server-side URL  'python-flask-files-upload'
+                cache: false,
+                contentType: false,
+                processData: false,
+                data: form_data,
+                type: 'POST',
+                dataType: 'jsonp', // what to expect back from server json   crossDomain: true,  xhrFields: { withCredentials: true },
+                success: function (response) { // display success response
+                    $('#msg').html('');
+                    $.each(response, function (key, data) {                         
+                        if(key !== 'message') {
+                            $('#msg').append(key + ' -> ' + data + '<br/>');
+                        } else {
+                            $('#msg').append(data + '<br/>');
+                        }
+                    })
+                },
+                error: function (response) {
+                    $('#msg').html(response.message); // display error response
+                }
+            });
+        });
+    });
+////////////////End javascript 
 </script>
 {% endblock %}
 {% block content %}
@@ -50,19 +93,108 @@
             <div class="row">
             <div class="col-sm-6">
             -->
-            <form method="POST" id="post-form" > <!--action="{% url 'predictform' %}" method="POST" -->
-            <input type="hidden" id="token" value="{% csrf_token %}" />
+            {% if upload %}
+            {{message}}
+             <p style="font-size: 20px; color:green">your model has been loaded successfully. Please wait your model is being validated</p>
+             <table id="dtResults" class="table table-striped table-bordered table-sm" cellspacing="0" width="50%">
+                <tr>
+                    <td><b>Model Name</b></td>
+                    <td>{{modelname}}</td>
+                </tr>
+                <tr>
+                    <td><b>Number of Feature</b></td>
+                    <td>{{feauturemodel}}</td>
+                </tr>
+                <tr>
+                    <td><b>Model DOI</b></td>
+                    <td>{{modeldoi}}</td>
+                </tr>
+
+                <tr>
+                    <td><b>Author</b></td>
+                    <td>{{author}}</td>
+                </tr>
+
+                <tr>
+                    <td><b>Author Affiliation</b></td>
+                    <td>{{authoraffiliation}}</td>
+                </tr>
+                <tr>
+                    <td><b>Model Description</b></td>
+                    <td>{{modeldescription}}</td>
+                </tr>
+                <tr>
+                    <td><b>Model file</b></td>
+                    <td>{{file}}</td>
+                </tr>
+             </table>
+             
+             
+            {% else %}
+            <form method="POST" id="post-form" enctype="multipart/form-data" action="{% url 'loadmodel' %}"> <!--action="{% url 'predictform' %}" method="POST" -->
+                {% csrf_token %}
+            <!-- <input type="hidden" id="token" value="{% csrf_token %}" /> -->
               
+                 <div class="form-group row">
+                    <div class="col-sm-3"><label for="Modelname">Model Name</label><span id="errorModel"></span></div>
+                    <div class="col-sm-6">
+                        <input type="text" name="modelname" id="idmodelname" class="form-control" required />
+                    </div>
+                  </div>
+
                   <div class="form-group row">
-                    <div class="col-sm-4"><label for="organism"></label>select file<span id="errorOrganism"></span></div>
-                    <div class="col-sm-8">
-                        <input type="file" name="">
+                    <div class="col-sm-3"><label for="featuremodel">Number of Feature</label><span id="errorModel"></span></div>
+                    <div class="col-sm-6">
+                        <input type="text" name="feauturemodel" id="idfeauturemodel" class="form-control" required />
+                    </div>
+                  </div>
+
+                <div class="form-group row">
+                    <div class="col-sm-3"><label for="modeldoi">Paper DOI / URL</label><span id="errorModel"></span></div>
+                    <div class="col-sm-6">
+                        <input type="text" name="modeldoi" id="idmodeldoi" class="form-control" required />
+                    </div>
+                  </div> 
+
+                  <div class="form-group row">
+                    <div class="col-sm-3"><label for="author">Model Author</label><span id="errorModel"></span></div>
+                    <div class="col-sm-6">
+                        <input type="text" name="author" id="idauthor" class="form-control" required />
+                    </div>
+                  </div>
+
+                  <div class="form-group row">
+                    <div class="col-sm-3"><label for="authoraffiliation">Affiliation Author</label><span id="errorModel"></span></div>
+                    <div class="col-sm-6">
+                        <input type="text" name="affiliationauthor" id="idaffiliation" class="form-control" required />
+                    </div>
+                  </div>
+
+
+                  <div class="form-group row">
+                    <div class="col-sm-3"><label for="modeldescription">Model description</label><span id="errorModel"></span></div>
+                    <div class="col-sm-6">
+                    <textarea class="form-control" id="modeldescription" name="modeldescription" rows="3" required></textarea>
+                    </div>
+                  </div> 
+
+
+                  <div class="form-group row">
+                    <div class="col-sm-3"><label for="organism"></label>Select file (<i><span style="color:red">h5,hdf5</span></i>)<span id="errorOrganism"></span></div>
+                    <div class="col-sm-6">
+                        <!-- <input type="file" id="multiFiles" name="files[]" multiple="multiple" class="form-control" /> -->
+                        <input type = "file" name = "filename" class="form-control" required="" />
+                    </div>
+                    <div class="col-sm-3" id="msg">
+                        
                     </div>
                      
                   </div>
-                <button type="button" class="btn btn-primary" onclick="submitForm()" >Next</button> 
                 <button type="reset" class="btn btn-primary" >Reset</button>
+                <button type="submit" class="btn btn-primary" >Save</button> <!-- onclick="submitForm()" id="upload" --> 
+                <!-- <input type="submit" name="">-->
               </form>
+              {% endif %}
             </div>
            <!--
             <div class="col-sm-6" id="results"> 

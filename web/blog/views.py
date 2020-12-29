@@ -7,9 +7,17 @@ from django.core import serializers
 import pandas
 import sys
 import os
+from werkzeug.utils import secure_filename
 #variable globales 
 allSpecies=dict()
 allProtein=dict()
+
+UPLOAD_FOLDER = 'static/model'
+ALLOWED_EXTENSIONS = {'h5', 'H5', 'hdf5', 'HDF5'}
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
 #vue de la page d'accueil
 def index(request):
     return render(request, 'blog/index.html', locals())
@@ -711,8 +719,50 @@ def predicttextmining(request):
     return render(request, 'blog/predicttextmining.html', locals())
 #load you own model
 def loadmodel(request):
+    if request.method == 'POST':
+        upload=True
+        file=request.FILES['filename']
+        #file = request.file['filename']
+        if file and allowed_file(file.name):
+            filename = secure_filename(file.name)
+            content=file.read()
+            fileSave = open(os.path.join(UPLOAD_FOLDER, filename), "w")
+            fileSave.write(str(content))
+            fileSave.close()
+            #recupération des données du formulaire
+            model_code=file.name
+            modelname = request.POST.get('modelname', None)
+            feauturemodel = request.POST.get('feauturemodel', None)
+            modeldoi = request.POST.get('modeldoi', None)
+            author = request.POST.get('author', None)
+            authoraffiliation = request.POST.get('affiliationauthor', None)
+            modeldescription = request.POST.get('modeldescription', None)
+            
+            data = {'model_code': model_code,'modelname':modelname,'feauturemodel':feauturemodel,'modeldoi':modeldoi,'author':author,'authoraffiliation':authoraffiliation,'modeldescription':modeldescription}
+            args = {'model_code': model_code,'modelname':modelname,'feauturemodel':feauturemodel,'modeldoi':modeldoi,'author':author,'authoraffiliation':authoraffiliation,'modeldescription':modeldescription}
+            header = {'Content-type': 'application/x-www-form-urlencoded; charset=utf-8'}
+            url="http://3.133.132.243:9082/deeply/insertModel"
+            message=""
+            #request to get list of species share the protein name
+            try: 
+                r = requests.post(url, data=data, params=args, headers=header, verify=False)
+                dumpJson=r.json()
+                message=dumpJson['insert']
+            except Exception as err: 
+                message=err
+            #file.save(os.path.join(UPLOAD_FOLDER, filename))
+    else:
+        upload=False
+
     return render(request, 'blog/loadmodel.html', locals())
 
+#ajax load model
+def ajaxloadmodel(request):
+
+    if request.method == 'POST':
+
+        return render(request, 'blog/ajaxloadmodel.html', locals())
+        
 #diplay API page
 def displayapi(request):
     return render(request, 'blog/displayapi.html', locals())
