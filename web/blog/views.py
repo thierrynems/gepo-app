@@ -874,14 +874,17 @@ def ajaxpedicttextmining(request):
                 result = dict()
                 gene = ""
                 species = ""
+                taxaid = ""
                 for value1 in value["annotations"]:
                     if value1["infons"]["type"] == "Gene":
                         gene = value1["text"]
                     if value1["infons"]["type"] == "Species":
                         species = value1["text"]
+                        taxaid = value1["infons"]["identifier"]
                     if gene != "" and species != "":
                         result['gene'] = gene
                         result['species'] = species
+                        result['taxaid'] = taxaid
                         # test de l'existance de l'élément
                         verif = 0
                         if index > 0:
@@ -893,9 +896,19 @@ def ajaxpedicttextmining(request):
                             index = index + 1
         elif action == 'step2':
             step2 = action
-            PREDICTION_VALUE = dict()
-            gene = request.POST.get('gene', None)
-            species = request.POST.get('species', None)
-            PREDICTION_VALUE = {'gene': gene, 'species': species}
+            # PREDICTION_VALUE = dict()
+            # gene = request.POST.get('gene', None)
+            speciesgenes = request.POST.get('speciesgenes', None)
+            tabspeciesgenes = speciesgenes.split("/")
+            genespeciesresult = dict()
+            indexresult = 0
+            for elt in tabspeciesgenes:
+                smallresult = dict()
+                smalltab = elt.split("_")
+                smallresult = {"gene":smalltab[0],"species":smalltab[1],"taxaid":smalltab[2]}
+                genespeciesresult[indexresult] = smallresult
+                indexresult = indexresult + 1
+
+            PREDICTION_VALUE = genespeciesresult
 
     return render(request, 'blog/ajaxpedicttextmining.html', locals())

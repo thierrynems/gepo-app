@@ -45,24 +45,22 @@ function submitFormStep2(){
     var speciesgenes="";
     var checkbox =document.getElementsByTagName('input');
     compteur=checkbox.length;
+    var v=0;
     for (var i=0; i<compteur; i++){
         if (checkbox[i].checked==true){
-            speciesgenes=checkbox[i].value;
+            if (v==0){speciesgenes=checkbox[i].value; v=1;}
+            else {speciesgenes=speciesgenes+"/"+checkbox[i].value;}
             }
         }
 
     if(speciesgenes!="" ){
-            tabspeciesgenes=speciesgenes.split("_");
-            var gene=tabspeciesgenes[0];
-            var species=tabspeciesgenes[1];
             $('#content').html('<img src="{% static 'loading.gif' %}" alt="loading...." width="200" height="200" align="center" /> ');
             $.ajax({
             type:'POST',
             dataType : 'html',
             url:'{% url "ajaxpedicttextmining" %}',
             data:{
-                gene:gene,
-                species:species,
+                speciesgenes:speciesgenes,
                 csrfmiddlewaretoken:'{{ csrf_token}}',
                 action: 'step2',
             },
