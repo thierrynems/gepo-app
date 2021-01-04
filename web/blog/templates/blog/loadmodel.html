@@ -6,6 +6,29 @@
 {% endblock %}
 {% block js %}
 <script language="javascript">
+//dataTable  content all model
+$(document).ready(function () {
+  $('#dtModel').DataTable();
+  $('.dataTables_length').addClass('bs-select');
+});
+//display new form 
+function addModel(){
+    var divModel = document.getElementById("contentModel");
+    var divForm = document.getElementById("contentForm");
+    var divMsg = document.getElementById("contentMsg");
+
+    divModel.style.display = "none";
+   // divMsg.style.display = "none";
+    divForm.style.display = "block";
+}
+//display Model
+function cancelModel(){
+    var divModel = document.getElementById("contentModel");
+    var divForm = document.getElementById("contentForm");
+    divModel.style.display = "block";
+    divForm.style.display = "none";
+}
+
 //fonction de soumission du formulaire
  function submitForm(){
 
@@ -85,52 +108,10 @@ $(document).ready(function (e) {
 {% endblock %}
 {% block content %}
     <div class="jumbotron">
-         <div class="container" id='content'>
-            <h3 class="display-5">Load your own model </h1>
+            <h3 class="display-5">Load your own model </h3>
                  
                 <br />
-            <!--
-            <div class="row">
-            <div class="col-sm-6">
-            -->
-            {% if upload %}
-            {{message}}
-             <p style="font-size: 20px; color:green">your model has been loaded successfully. Please wait your model is being validated</p>
-             <table id="dtResults" class="table table-striped table-bordered table-sm" cellspacing="0" width="50%">
-                <tr>
-                    <td><b>Model Name</b></td>
-                    <td>{{modelname}}</td>
-                </tr>
-                <tr>
-                    <td><b>Number of Feature</b></td>
-                    <td>{{feauturemodel}}</td>
-                </tr>
-                <tr>
-                    <td><b>Model DOI</b></td>
-                    <td>{{modeldoi}}</td>
-                </tr>
-
-                <tr>
-                    <td><b>Author</b></td>
-                    <td>{{author}}</td>
-                </tr>
-
-                <tr>
-                    <td><b>Author Affiliation</b></td>
-                    <td>{{authoraffiliation}}</td>
-                </tr>
-                <tr>
-                    <td><b>Model Description</b></td>
-                    <td>{{modeldescription}}</td>
-                </tr>
-                <tr>
-                    <td><b>Model file</b></td>
-                    <td>{{file}}</td>
-                </tr>
-             </table>
-             
-             
-            {% else %}
+            <div class="container" id="contentForm" style="display:none;">
             <form method="POST" id="post-form" enctype="multipart/form-data" action="{% url 'loadmodel' %}"> <!--action="{% url 'predictform' %}" method="POST" -->
                 {% csrf_token %}
             <!-- <input type="hidden" id="token" value="{% csrf_token %}" /> -->
@@ -190,19 +171,90 @@ $(document).ready(function (e) {
                     </div>
                      
                   </div>
-                <button type="reset" class="btn btn-primary" >Reset</button>
+                <button type="reset" class="btn btn-primary" onclick="cancelModel()">Reset</button>
                 <button type="submit" class="btn btn-primary" >Save</button> <!-- onclick="submitForm()" id="upload" --> 
                 <!-- <input type="submit" name="">-->
               </form>
-              {% endif %}
-            </div>
-           <!--
-            <div class="col-sm-6" id="results"> 
-                
-            </div>
+          </div>
+
+          {% if upload %}
+            {{message}}
+             <p style="font-size: 20px; color:green" id="contentMsg">your model has been loaded successfully. Please wait your model is being validated</p>
+            <!--
+             <table id="dtResults" class="table table-striped table-bordered table-sm" cellspacing="0" width="50%">
+                <tr>
+                    <td><b>Model Name</b></td>
+                    <td>{{modelname}}</td>
+                </tr>
+                <tr>
+                    <td><b>Number of Feature</b></td>
+                    <td>{{feauturemodel}}</td>
+                </tr>
+                <tr>
+                    <td><b>Model DOI</b></td>
+                    <td>{{modeldoi}}</td>
+                </tr>
+
+                <tr>
+                    <td><b>Author</b></td>
+                    <td>{{author}}</td>
+                </tr>
+
+                <tr>
+                    <td><b>Author Affiliation</b></td>
+                    <td>{{authoraffiliation}}</td>
+                </tr>
+                <tr>
+                    <td><b>Model Description</b></td>
+                    <td>{{modeldescription}}</td>
+                </tr>
+                <tr>
+                    <td><b>Model file</b></td>
+                    <td>{{file}}</td>
+                </tr>
+             </table>
+             -->
+            {% else %}
+            
+            {% endif %}
+
+            <div class="container" id='contentModel'>  
+            <div class="form-group row">
+                <div class="col-sm-3"><button type="reset" class="btn btn-primary" onclick="addModel()">Add a new Model</button> </div>
+                <div class="col-sm-6"></div>
+              </div>
+            <table id="dtModel" class="table table-striped table-bordered table-sm" cellspacing="0" width="80%">
+            <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Model Code</th>
+              <th scope="col">Model Name</th>
+              <th scope="col">#feature</th>
+              <th scope="col">Model DOI</th>
+              <th scope="col">Model Author</th>
+              <th scope="col">Model Description</th>
+              <th scope="col">isupload</th>
+              <!--<th scope="col">Observation</th> -->
+            </tr>
+          </thead>
+        <tbody>
+            {% for key, model in modelList.items %}
+        <tr>
+          <td>{{ key|add:"+1" }}</td>
+          <td>{{model.model_code}}</td>
+          <td>{{ model.model_name }}</td>
+          <td>{{ model.model_feauture}}</td>
+          <td>{{ model.model_doi}}</td>
+          <td>{{ model.model_author}}</td>
+          <td>{{ model.model_description|truncatechars:80 }}</td>
+          <td>{{ model.isupload}}</td>
+        </tr>
+      
+    {% endfor %}
+        </tbody>
+        </table>
+            
+           
         </div>
-    -->
-        </div>
-    </div>
     
 {% endblock %}

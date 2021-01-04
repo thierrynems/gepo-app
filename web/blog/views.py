@@ -97,12 +97,18 @@ def searchbyprotein(request):
     defaultProtSeq="MENILDLWNQALAQIEKKLSKPSFETWMKSTKAHSLQGDTLTITAPNEFARDWLESRYLHLIADTIYELTGEELSIKFVIPQNQDVEDFMPKPQVKKAVKEDTSDFPQNMLNPKYTFDTFVIGSGNRFAHAASLAVAEAPAKAYNPLFIYGGVGLGKTHLMHAIGHYVIDHNPSAKVVYLSSEKFTNEFINSIRDNKAVDFRNRYRNVDVLLIDDIQFLAGKEQTQEEFFHTFNTLHEESKQIVISSDRPPKEIPTLEDRLRSRFEWGLITDITPPDLETRIAILRKKAKAEGLDIPNEVMLYIANQIDSNIRELEGALIRVVAYSSLINKDINADLAAEALKDIIPSSKPKVITIKEIQRVVGQQFNIKLEDFKAKKRTKSVAFPRQIAMYLSREMTDSSLPKIGEEFGGRDHTTVIHAHEKISKLLADDEQLQQHVKEIKEQLK"
     #url="http://195.24.221.74:9200/species*/_search?size=150&q=*.*&pretty=true"
     #api to get list of species
-    #url="http://3.133.132.243:9082/deeply/speciesList"
+    urlAWS="http://3.133.132.243:9082/deeply/speciesList"
     url="http://195.24.221.74:5001/searchspecies"
     #r = requests.post(url, data=data, params=args, headers=header, verify=False)
-    r = requests.get(url)
-    species=r.json()
-    allSpecies=species
+    try:
+        r = requests.get(url)
+        species=r.json()
+        allSpecies=species
+    except:
+        r = requests.get(urlAWS)
+        species=r.json()
+        allSpecies=species
+
     #load dataset 
     #dataset="blog/datasets/species.v11.0.txt"
     #df = pandas.read_csv(dataset,sep= '\t', header = 0)
@@ -153,13 +159,13 @@ def ajaxsearchprotein(request):
             proteinName = request.POST.get('proteinName', None)
             specie = request.POST.get('specie', None)
             step=action
-            #data = {'proteinName': proteinName,'species_id':specie}
-            #args = {'proteinName': proteinName,'species_id':specie}
+            dataaws = {'proteinName': proteinName,'species_id':specie}
+            argsaws = {'proteinName': proteinName,'species_id':specie}
             data = {'protein_name': proteinName,'species_id':specie}
             args = {'protein_name': proteinName,'species_id':specie}
             actionDict={"feature":"Feature Engeneering","prediction":"Prediction"}
             header = {'Content-type': 'application/x-www-form-urlencoded; charset=utf-8'}
-            #url="http://3.133.132.243:9082/deeply/searchProtein"
+            urlAWS="http://3.133.132.243:9082/deeply/searchProtein"
             url="http://195.24.221.74:5001/searchproteinbyname"
             #request to get list of species share the protein name
             proteinList=""
@@ -169,7 +175,9 @@ def ajaxsearchprotein(request):
                 proteinList=r.json()
                 allProtein=proteinList
             except Exception as e:
-                print("error")
+                r = requests.post(urlAWS, data=dataaws, params=argsaws, headers=header, verify=False)
+                proteinList=r.json()
+                allProtein=proteinList
             #get protein ID
             proteinID=""
             proteinExternalId=""
@@ -316,6 +324,7 @@ def ajaxsearchprotein(request):
                                 feauturePredict=r.json()
                                 CIARCSUFeat=feauturePredict['CIARCSUFeat']['DEG100011']
                                 GCFeat=feauturePredict['GCFeat']['DEG100011']
+                                GCFeat=GCFeat[0]
                                 GeneLength=feauturePredict['GeneLength']['DEG100011']
                                 KmerFeat=feauturePredict['KmerFeat']['DEG100011']
                                 ProteinFeat=feauturePredict['ProteinFeat']['DEG100011']
@@ -570,6 +579,7 @@ def ajaxsearchlistprotein(request):
                         feauturePredict=r.json()
                         CIARCSUFeat=feauturePredict['CIARCSUFeat']['DEG100011']
                         GCFeat=feauturePredict['GCFeat']['DEG100011']
+                        GCFeat=GCFeat[0]
                         GeneLength=feauturePredict['GeneLength']['DEG100011']
                         KmerFeat=feauturePredict['KmerFeat']['DEG100011']
                         ProteinFeat=feauturePredict['ProteinFeat']['DEG100011']
@@ -719,6 +729,7 @@ def predicttextmining(request):
     return render(request, 'blog/predicttextmining.html', locals())
 #load you own model
 def loadmodel(request):
+    
     if request.method == 'POST':
         upload=True
         file=request.FILES['filename']
@@ -752,7 +763,19 @@ def loadmodel(request):
                 message=err
             #file.save(os.path.join(UPLOAD_FOLDER, filename))
     else:
+        #load a all model
         upload=False
+
+    modelList=dict()
+    try: 
+        url="http://3.133.132.243:9082/deeply/getModels"
+        r = requests.get(url)
+        modelList=r.json()
+    except Exception as err: 
+        modelList=dict()
+
+
+        
 
     return render(request, 'blog/loadmodel.html', locals())
 
