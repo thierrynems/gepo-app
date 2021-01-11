@@ -151,13 +151,45 @@ function submitFormStep2_Old(){
 //Fonction de chargement des examples
 function setexample(t){
     if(t==1){//PMC Example
-        document.getElementById('elementid').value="PMC6982432";
+        document.getElementById('elementid').value="PMC6386719";
         document.getElementById('database').value="pmc";
     }
-    if(t==2){//PM Example
-        document.getElementById('elementid').value="28483578";
+    if(t==2){//PMC Example
+        document.getElementById('elementid').value="PMC6052904";
+        document.getElementById('database').value="pmc";
+    }
+    if(t==3){//PMC Example
+        document.getElementById('elementid').value="PMC5517513";
+        document.getElementById('database').value="pmc";
+    }
+    if(t==4){//PMC Example
+        document.getElementById('elementid').value="PMC5193443";
+        document.getElementById('database').value="pmc";
+    }
+    if(t==5){//PMC Example
+        document.getElementById('elementid').value="PMC4243691";
+        document.getElementById('database').value="pmc";
+    }
+    if(t==6){//PM Example
+        document.getElementById('elementid').value="26748795";
         document.getElementById('database').value="pubmed";
     }
+    if(t==7){//PM Example
+        document.getElementById('elementid').value="25505449";
+        document.getElementById('database').value="pubmed";
+    }
+    if(t==8){//PM Example
+        document.getElementById('elementid').value="30807684";
+        document.getElementById('database').value="pubmed";
+    }
+    if(t==9){//PM Example
+        document.getElementById('elementid').value="30718429";
+        document.getElementById('database').value="pubmed";
+    }
+    if(t==10){//PM Example
+        document.getElementById('elementid').value="29432687";
+        document.getElementById('database').value="pubmed";
+    }   
 }
 </script>
 {% endblock %}
@@ -172,8 +204,16 @@ function setexample(t){
               <div class="form-group row">
                     <div class="col-sm-1"></div>
                     <div class="col-sm-4"> 
-                        <a href="#" onclick="setexample(1)">PMCID-example</a>  |  
-                        <a href="#" onclick="setexample(2)">PMID-example</a>
+                        <a href="#" onclick="setexample(1)">PMC-example1</a>  | 
+                        <a href="#" onclick="setexample(2)">PMC-example2</a>  |
+                        <a href="#" onclick="setexample(3)">PMC-example3</a>  |
+                        <a href="#" onclick="setexample(4)">PMC-example4</a>  |
+                        <a href="#" onclick="setexample(5)">PMC-example5</a>  |
+                        <a href="#" onclick="setexample(6)">PM-example1</a>   |
+                        <a href="#" onclick="setexample(7)">PM-example2</a>   |
+                        <a href="#" onclick="setexample(8)">PM-example3</a>   |
+                        <a href="#" onclick="setexample(9)">PM-example4</a>   |
+                        <a href="#" onclick="setexample(10)">PM-example5</a>
                     </div>
                     
                   </div>
