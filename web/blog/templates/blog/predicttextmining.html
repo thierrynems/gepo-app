@@ -41,7 +41,74 @@
   
 }
 // Fonction de soumission de formulaire Step2
+
 function submitFormStep2(){
+
+    //get list of protein check 
+    var tableau =[];
+    var listCheck=""
+    var taxaID="";
+    var proteinName="";
+    var specieName="";
+    var checkbox =document.getElementsByTagName('input');
+    compteur=checkbox.length;
+    for (var i=0; i<compteur; i++){
+        if (checkbox[i].checked==true){
+            tableau[i]=checkbox[i].value;
+            var data=checkbox[i].value;
+            var tabData=data.split('_');
+            taxaID=tabData[2];
+            proteinName=tabData[0];
+            specieName=tabData[1];
+            if(listCheck=="")listCheck=taxaID;
+            else listCheck=listCheck+";"+taxaID;
+            }
+        }
+    //proteinName = $('#idProteinName').val();
+    //specie = $('#idSpecie').val();
+    proteinName = proteinName;
+    specie = taxaID;
+    proteinID=taxaID;
+    proteinExternalId="";
+    service = $('#actionSelect').val();
+    //proteinID=$('#proteinID').val();
+    //proteinExternalId=$('#proteinExternalId').val();
+    //alert(proteinID)
+    if(specie!="" && proteinName!="" && service!="" && listCheck!=""){
+        $('#content').html(""); //reset result content
+        $('#content').html('<img src="{% static 'loading.gif' %}" alt="loading...." width="200" height="200" align="center" /> ');
+            $.ajax({
+            type:'POST',
+            dataType : 'html',
+            url:'{% url "ajaxsearchprotein" %}',
+            data:{
+                proteinName:proteinName, 
+                specie:specie,
+                service:service,
+                listCheck:listCheck,
+                proteinID:proteinID,
+                proteinExternalId:proteinExternalId,
+                csrfmiddlewaretoken:'{{ csrf_token}}',
+                action: 'step2',
+            },
+            success:function(data){
+                //document.getElementById("post-form").reset();
+                //$("results").prepend(data)
+                $('#content').html(data)
+            },
+            error : function(xhr,errmsg,err) {
+            console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+        $('#content').html("Error :"+xhr.status+" Detail: "+ xhr.responseText);
+        }
+        });
+    }else{
+        alert("Error: please check your fill");
+    }
+    
+}
+
+
+function submitFormStep2_Old(){
     var speciesgenes="";
     var checkbox =document.getElementsByTagName('input');
     compteur=checkbox.length;
@@ -102,33 +169,29 @@ function setexample(t){
             <form method="POST" id="post-form" > <!--action="{% url 'predictform' %}" method="POST" -->
             <input type="hidden" id="token" value="{% csrf_token %}" />
               
-                  <div class="form-group row">
-                    <!--<div class="col-sm-4"><label for="organism"></label>DataBase<span id="errorOrganism"></span></div>-->
-                    <div class="col-sm-8">
-                        <table border="0">
-                            <tr>
-                                <td>Set ID</td>
-                                <td>
-                                    <select name="database" id="database">
-                                       <option value="pmc" selected="selected">PMC</option>
-                                       <option value="pubmed">PubMed</option>
-                                    </select>
-                                </td>
-                                <td><input type="text" name="elementid" id="elementid" placeholder="PmcID/PubMedID/PmID"></td>
-                            </tr>
-                        </table>
-                        <table border="0">
-                            <tr>
-                                <td align="left"><a href="#" onclick="setexample(1)">PMCIDexample</a></td>
-                                <td></td>
-                                <td align="right"><a href="#" onclick="setexample(2)">PMIDexample</a></td>
-                            </tr>
-                        </table>
+              <div class="form-group row">
+                    <div class="col-sm-1"></div>
+                    <div class="col-sm-4"> 
+                        <a href="#" onclick="setexample(1)">PMCID-example</a>  |  
+                        <a href="#" onclick="setexample(2)">PMID-example</a>
                     </div>
-                     
+                    
                   </div>
-                <button type="button" class="btn btn-primary" onclick="submitForm()" >Next</button> 
+
+              <div class="form-group row">
+                    <div class="col-sm-1"><label for="setid">Set ID</label><span id="error"></span></div>
+                    <div class="col-sm-2">
+                     <select name="database" id="database" class="form-control">
+                           <option value="pmc" selected="selected">PMC</option>
+                           <option value="pubmed">PubMed</option>
+                    </select>
+                    </div>
+                    <div class="col-sm-6">
+                        <input type="text" name="elementid" id="elementid" placeholder="PmcID/PubMedID/PmID" class="form-control" />
+                    </div>
+                  </div>
                 <button type="reset" class="btn btn-primary" >Reset</button>
+                <button type="button" class="btn btn-primary" onclick="submitForm()" >Next=> </button> 
               </form>
         </div>
     </div>

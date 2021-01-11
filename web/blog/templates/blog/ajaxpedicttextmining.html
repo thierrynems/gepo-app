@@ -1,54 +1,75 @@
+<script language="javascript">
+//dataTable  Step 2
+$(document).ready(function () {
+  $('#dtGene').DataTable();
+  $('.dataTables_length').addClass('bs-select');
+});
+ 
+</script>
 {% load static %}
 {% if action == step %}
-    <div class="jumbotron">
          <div class="container" id='content'>
-            <h3 class="display-5">Predict from text mining/ Step 2 </h3>
+            <h3 class="display-5">Predict from text mining/ Step 2</h3>
+            <p><b><i>Please select genes and species for prediction</i></b></p>
                 <br />
             <form method="POST" id="post-form" > <!--action="{% url 'predictform' %}" method="POST" -->
             <input type="hidden" id="token" value="{% csrf_token %}" />
                   <div class="form-group row">
+                  <div class="col-sm-12">
+
+                    <div class="form-group row">
+                        <div class="col-sm-3"><label>TITLE</label></div>
+                        <div class="col-sm-8"><i>{{ Title }} </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <div class="col-sm-3"><label>DOI</label></div>
+                        <div class="col-sm-8"><i>{{ Doi }} </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <div class="col-sm-3"><label>YEAR</label></div>
+                        <div class="col-sm-8"><i>{{ Year }} </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <div class="col-sm-3"><label>Article PMID</label></div>
+                        <div class="col-sm-8"><i>{{ Articleid_pmid }} </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <div class="col-sm-3"><label >Article PMCID</label></div>
+                        <div class="col-sm-8"><i>{{ Articleid_pmc }} </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <div class="col-sm-3"><label >Autors</label></div>
+                        <div class="col-sm-8"><i>{{ Authors }} </div>
+                    </div>
+                     <div class="form-group row">
+                    <div class="col-sm-3"><label for="actionselestcion">Select Service: </label><span  id="errorService"></span></div>                    
                     <div class="col-sm-8">
-                        <table class="table table-striped table-bordered table-sm" cellspacing="0" width="100%">
-                            <tr>
-                                <td colspan="2" align="left" bgcolor="#86899c"><b><font size="2">Article Metadata</font></b></td>
-                            </tr>
-                            <tr>
-                                <td width="40%"><b><font size="-3" color="#153159">TITLE</font></b>:</td>
-                                <td><i><font size="-4">{{ Title }}</font></i></td>
-                            </tr>
-                            <tr>
-                                <td width="40%"><b><font size="-3" color="#153159">DOI</font></b>:</td>
-                                <td><i><font size="-4">{{ Doi }}</font></i></td>
-                            </tr>
-                            <tr>
-                                <td width="40%"><b><font size="-3" color="#153159">YEAR</font></b>:</td>
-                                <td><i><font size="-4">{{ Year }}</font></i></td>
-                            </tr>
-                            <tr>
-                                <td width="40%"><b><font size="-3" color="#153159">Article PMID</font></b>:</td>
-                                <td><i><font size="-4">{{ Articleid_pmid }}</font></i></td>
-                            </tr>
-                            <tr>
-                                <td width="40%"><b><font size="-3" color="#153159">Article PMCID</font></b>:</td>
-                                <td><i><font size="-4">{{ Articleid_pmc }}</font></i></td>
-                            </tr>
-                            <tr>
-                                <td width="40%"><b><font size="-3" color="#153159">Autors</font></b>:</td>
-                                <td><i><font size="-4">{{ Authors }}</font></i></td>
-                            </tr>
-                        </table>
-                        <table id="dtSpecies" class="table table-striped table-bordered table-sm" cellspacing="0" width="100%">
+                        <select id="actionSelect" class="form-control" name="actionSelect" required>
+                            <option value="">choice Service...</option>
+                            {% for code, nom in actionDict.items %}
+                            <option value="{{ code }}">{{ nom }}</option>
+                            {% endfor %} 
+                          </select>
+                    </div>
+                  </div>
+                        <table id="dtGene" class="table table-striped table-bordered table-sm" cellspacing="0" width="100%">
                               <thead>
                                <tr>
-                                <th colspan="5" align="center" bgcolor="#86899c"><b><font size="2">Select genes and species for prediction</font></b></th>
+                                <!-- <th colspan="5" align="center" bgcolor="#86899c"><b><font size="2"></font></b></th> -->
                                </tr>
                                <tr>
                                   <th class="th-sm"> # </th>
                                   <th>Check</th>
                                   <th class="th-sm"></th>
-                                  <th class="th-sm">Genes</th>
-                                  <th class="th-sm">Species</th>
                                   <th class="th-sm">TaxaID</th>
+                                  <th class="th-sm">Species</th>
+                                  <!-- <th class="th-sm">Gene Locus</th> -->
+                                  <th class="th-sm">Genes</th>
                                 </tr>
                               </thead>
                               <tbody>
@@ -57,18 +78,19 @@
                                   <td> {{ key|add:"+1" }} </td>
                                   <td></td>
                                   <td><input  type="checkbox" id="chk_{{ key|add:'+1' }}" name="speciegene" value="{{ mySpecieGene.gene }}_{{ mySpecieGene.species }}_{{ mySpecieGene.taxaid }}" class="form-check-input" onclick="test()" /> </td>
-                                  <td>{{ mySpecieGene.gene }}</td>
-                                  <td>{{ mySpecieGene.species }}</td>
                                   <td>{{ mySpecieGene.taxaid }}</td>
+                                  <td>{{ mySpecieGene.species }}</td>
+                                  <!-- <td>{{ mySpecieGene.geneLocus }}</td> -->
+                                  <td>{{ mySpecieGene.gene }}</td>
                                 </tr>
                                 {% endfor %}
                             </tbody>
                         </table>
+                        <button type="reset" class="btn btn-primary" >Reset</button>
+                        <button type="button" class="btn btn-primary" onclick="submitFormStep2()" >Next =></button>
+                      </form>
                     </div>
-                  </div>
-                <button type="button" class="btn btn-primary" onclick="submitFormStep2()" >Next</button>
-                <button type="reset" class="btn btn-primary" >Reset</button>
-              </form>
+
         </div>
     </div>
 {% endif %}

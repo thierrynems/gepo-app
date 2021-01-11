@@ -3,6 +3,8 @@
 
 {% block css %}
     <link href="{% static 'css/users.css' %}" rel="stylesheet">
+
+</style>
 {% endblock %}
 {% block js %}
 <script language="javascript">
@@ -111,8 +113,10 @@ function selectAll (ch) {
     }
 }
 </script>
+
 {% endblock %}
 {% block content %}
+
     <div class="jumbotron">
         <div class="container">
             <h1 class="display-5">Gene Essential Predictor Online</h1>
@@ -120,7 +124,8 @@ function selectAll (ch) {
             <!-- <p><a class="btn btn-primary btn-lg" href="#" role="button">Learn more &raquo;</a></p> -->
               <form  action="#" method="POST" id="post-form" >
                 <input type="hidden" id="token" value="{% csrf_token %}" />
-                <input class="form-control input-sm" type="text" placeholder="Search ~~ 5000 Essential genes | enter the name of a protein" aria-label="search" name="search" id="idsearch">
+                <!-- class="form-control input-sm" -->
+                <input  type="text" class="form-control input-sm" placeholder="Search ~~ 5000 Essential genes | enter the name of a protein" aria-label="search" name="search" id="idsearch">
                 <button class="btn btn-outline-success my-2 my-sm-0" type="button" onclick="checkForm()">Search</button> | Protein name Example (
                 <a href="#" onclick="example(1)">#1</a>
                 <a href="#" onclick="example(2)">#2</a>

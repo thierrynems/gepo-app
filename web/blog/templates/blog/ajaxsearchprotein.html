@@ -167,10 +167,42 @@ $(document).ready(function () {
     </tr>
       
     {% endfor %}
-
+  <table>
+  <tr>
+    <td></td>
+    <td colspan="2"><b><center>Prediction</center></b></td>
+    <td></td>
+    <td colspan="2"><b><center>Feature Eng. </center></b></td>
+  </tr>
+  <tr>
+    <td><button type="button" class="btn btn-primary" onclick="" > <= Previous </button></td>
+    <td>
+      <a href="{% static 'download/predictResult.csv' %} "  target="_blank" >
+        <img src="{% static 'csv.png' %}" alt="csv" width="60" height="60" align="center" /> 
+      </a>
+    </td>
+    <td>
+      <a href="{% static 'download/predictResult.txt' %}"  target="_blank">
+       <img src="{% static 'txt.png' %}" alt="txt" width="60" height="60" align="center" /> 
+      </a>
+    </td>
+    <td> =||= </td>
+    <td>
+      <a href="{% static 'download/FeatureResult.csv' %} "  target="_blank" >
+        <img src="{% static 'csv.png' %}" alt="csv" width="60" height="60" align="center" /> 
+      </a>
+    </td>
+    <td>
+      <a href="{% static 'download/FeatureResult.txt' %}"  target="_blank">
+        <img src="{% static 'txt.png' %}" alt="txt" width="60" height="60" align="center" />
+      </a>
+    </td>
+  </tr>
+  </table>
      
   </tbody>
   </table>
+  <!--
   <table>
   <tr>
     <td><button type="button" class="btn btn-primary" onclick="" > <= Previous </button></td>
@@ -193,6 +225,7 @@ $(document).ready(function () {
     </td>
   </tr>
   </table>
+-->
 </form>
 </div>
 {% endif %}

@@ -11,9 +11,37 @@ from werkzeug.utils import secure_filename
 #variable globales 
 allSpecies=dict()
 allProtein=dict()
+#content list of model
+urlModel="http://3.133.132.243:9082/deeply/getModels"
+MODEL_DICT=dict()
+try: 
+    r = requests.get(urlModel)
+    listModel=r.json()
+    for key, oneModel in listModel.items():
+        isdisplay=oneModel['isdisplay']
+        if(int(isdisplay)==1): 
+            model_code=str(oneModel['model_code'])
+            model_name=str(oneModel['model_name'])
+            MODEL_DICT[model_code]=model_name
+except: 
+    MODEL_DICT=dict()
+
+#modelDict={"deeplyTrain9deeply-model":"Deeply Core","sgsTrain9deeply-model":"Deeply SGSv0.1","deepHE9deeply-model":"DeeplyHE","SRBTRain9deeply-model":"Deeply Core SRB","SRBSgsTrain9deeply-model":"SGS SRB","SRBHETrain9deeply-model":"DeeplyHE SRB","mlModel":"Classical Machine Learning Model"}
 
 UPLOAD_FOLDER = 'static/model'
 ALLOWED_EXTENSIONS = {'h5', 'H5', 'hdf5', 'HDF5'}
+#URL des API
+URL_API="http://3.133.132.243:5001"
+#list of species
+URL_API_SPECIES=str(URL_API+"/searchspecies")
+URL_API_SPECIES_KEGG=str(URL_API+"/searchkeggorganis")
+#protein 
+URL_API_PROTEIN_EPATH=str(URL_API+"/searchproteinepath")
+
+URL_API_PROTEIN_STRING=str(URL_API+"/searchproteinbyname")
+
+
+
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
@@ -24,8 +52,9 @@ def index(request):
 
 #vue du formulaire de prediction
 def predictform(request):
+    modelDict=MODEL_DICT
     #modelDict={"deeply":"Deeply Essential Model","mlModel":"Classical Machine Learning Model"}
-    modelDict={"deeplyTrain9deeply-model":"Deeply Core","sgsTrain9deeply-model":"Deeply SGSv0.1","deepHE9deeply-model":"DeeplyHE","SRBTRain9deeply-model":"Deeply Core SRB","SRBSgsTrain9deeply-model":"SGS SRB","SRBHETrain9deeply-model":"DeeplyHE SRB","mlModel":"Classical Machine Learning Model"}
+    #modelDict={"deeplyTrain9deeply-model":"Deeply Core","sgsTrain9deeply-model":"Deeply SGSv0.1","deepHE9deeply-model":"DeeplyHE","SRBTRain9deeply-model":"Deeply Core SRB","SRBSgsTrain9deeply-model":"SGS SRB","SRBHETrain9deeply-model":"DeeplyHE SRB","mlModel":"Classical Machine Learning Model"}
     actionDict={"feature":"Feature Engeneering","prediction":"Prediction"}
     defaultGeneSeq="ATGGAAAATATATTAGACCTGTGGAACCAAGCCCTTGCTCAAATCGAAAAAAAGTTGAGCAAACCGAGTTTTGAGACTTGGATGAAGTCAACCAAAGCCCACTCACTGCAAGGCGATACATTAACAATCACGGCTCCCAATGAATTTGCCAGAGACTGGCTGGAGTCCAGATACTTGCATCTGATTGCAGATACTATATATGAATTAACCGGGGAAGAATTGAGCATTAAGTTTGTCATTCCTCAAAATCAAGATGTTGAGGACTTTATGCCGAAACCGCAAGTCAAAAAAGCGGTCAAAGAAGATACATCTGATTTTCCTCAAAATATGCTCAATCCAAAATATACTTTTGATACTTTTGTCATCGGATCTGGAAACCGATTTGCACATGCTGCTTCCCTCGCAGTAGCGGAAGCGCCCGCGAAAGCTTACAACCCTTTATTTATCTATGGGGGCGTCGGCTTAGGGAAAACACACTTAATGCATGCGATCGGCCATTATGTAATAGATCATAATCCTTCTGCCAAAGTGGTTTATCTGTCTTCTGAGAAATTTACAAACGAATTCATCAACTCTATCCGAGATAATAAAGCCGTCGACTTCCGCAATCGCTATCGAAATGTTGATGTGCTTTTGATAGATGATATTCAATTTTTAGCGGGGAAAGAACAAACCCAGGAAGAATTTTTCCATACATTTAACACATTACACGAAGAAAGCAAACAAATCGTCATTTCAAGTGACCGGCCGCCAAAGGAAATTCCGACACTTGAAGACAGATTGCGCTCACGTTTTGAATGGGGACTTATTACAGATATCACACCGCCTGATCTAGAAACGAGAATTGCAATTTTAAGAAAAAAGGCCAAAGCAGAGGGCCTCGATATTCCGAACGAGGTTATGCTTTACATCGCGAATCAAATCGACAGCAATATTCGGGAACTCGAAGGAGCATTAATCAGAGTTGTCGCTTATTCATCTTTAATTAATAAAGATATTAATGCTGATCTGGCCGCTGAGGCGTTGAAAGATATTATTCCTTCCTCAAAACCGAAAGTCATTACGATAAAAGAAATTCAGAGGGTAGTAGGCCAGCAATTTAATATTAAACTCGAGGATTTCAAAGCAAAAAAACGGACAAAGTCAGTAGCTTTTCCGCGTCAAATCGCCATGTACTTATCAAGGGAAATGACTGATTCCTCTCTTCCTAAAATCGGTGAAGAGTTTGGAGGACGTGATCATACGACCGTTATTCATGCGCATGAAAAAATTTCAAAACTGCTGGCAGATGATGAACAGCTTCAGCAGCATGTAAAAGAAATTAAAGAACAGCTTAAATAG"
     defaultProtSeq="MENILDLWNQALAQIEKKLSKPSFETWMKSTKAHSLQGDTLTITAPNEFARDWLESRYLHLIADTIYELTGEELSIKFVIPQNQDVEDFMPKPQVKKAVKEDTSDFPQNMLNPKYTFDTFVIGSGNRFAHAASLAVAEAPAKAYNPLFIYGGVGLGKTHLMHAIGHYVIDHNPSAKVVYLSSEKFTNEFINSIRDNKAVDFRNRYRNVDVLLIDDIQFLAGKEQTQEEFFHTFNTLHEESKQIVISSDRPPKEIPTLEDRLRSRFEWGLITDITPPDLETRIAILRKKAKAEGLDIPNEVMLYIANQIDSNIRELEGALIRVVAYSSLINKDINADLAAEALKDIIPSSKPKVITIKEIQRVVGQQFNIKLEDFKAKKRTKSVAFPRQIAMYLSREMTDSSLPKIGEEFGGRDHTTVIHAHEKISKLLADDEQLQQHVKEIKEQLK"
@@ -45,8 +74,10 @@ def ajaxpredictform(request):
         feature=False
         prediction=False
         envoi=True
+        modelDict=MODEL_DICT
         #modelDict={"deeply":"Deeply Essential Model","mlModel":"Classical Machine Learning Model"}
-        modelDict={"deeplyTrain9deeply-model":"Deeply Core","sgsTrain9deeply-model":"Deeply SGSv0.1","deepHE9deeply-model":"DeeplyHE","SRBTRain9deeply-model":"Deeply Core SRB","SRBSgsTrain9deeply-model":"SGS SRB","SRBHETrain9deeply-model":"DeeplyHE SRB","mlModel":"Classical Machine Learning Model"}
+
+        #modelDict={"deeplyTrain9deeply-model":"Deeply Core","sgsTrain9deeply-model":"Deeply SGSv0.1","deepHE9deeply-model":"DeeplyHE","SRBTRain9deeply-model":"Deeply Core SRB","SRBSgsTrain9deeply-model":"SGS SRB","SRBHETrain9deeply-model":"DeeplyHE SRB","mlModel":"Classical Machine Learning Model"}
         actionDict={"feature":"Feature Engeneering","prediction":"Prediction"}
         data = {'geneSeq': geneSequence, 'protSeq': proteinSequence,'model':modelSelect}
         args = {'geneSeq': geneSequence, 'protSeq': proteinSequence,'model':modelSelect}
@@ -91,23 +122,28 @@ def ajaxpredictform(request):
 #seach by name 
 def searchbyprotein(request):
     #modelDict={"deeply":"Deeply Essential Model","mlModel":"Classical Machine Learning Model"}
-    modelDict={"deeplyTrain9deeply-model":"Deeply Core","sgsTrain9deeply-model":"Deeply SGSv0.1","deepHE9deeply-model":"DeeplyHE","SRBTRain9deeply-model":"Deeply Core SRB","SRBSgsTrain9deeply-model":"SGS SRB","SRBHETrain9deeply-model":"DeeplyHE SRB","mlModel":"Classical Machine Learning Model"}
+    modelDict=MODEL_DICT
+    #modelDict={"deeplyTrain9deeply-model":"Deeply Core","sgsTrain9deeply-model":"Deeply SGSv0.1","deepHE9deeply-model":"DeeplyHE","SRBTRain9deeply-model":"Deeply Core SRB","SRBSgsTrain9deeply-model":"SGS SRB","SRBHETrain9deeply-model":"DeeplyHE SRB","mlModel":"Classical Machine Learning Model"}
     actionDict={"feature":"Feature Engeneering","prediction":"Prediction"}
     defaultGeneSeq="ATGGAAAATATATTAGACCTGTGGAACCAAGCCCTTGCTCAAATCGAAAAAAAGTTGAGCAAACCGAGTTTTGAGACTTGGATGAAGTCAACCAAAGCCCACTCACTGCAAGGCGATACATTAACAATCACGGCTCCCAATGAATTTGCCAGAGACTGGCTGGAGTCCAGATACTTGCATCTGATTGCAGATACTATATATGAATTAACCGGGGAAGAATTGAGCATTAAGTTTGTCATTCCTCAAAATCAAGATGTTGAGGACTTTATGCCGAAACCGCAAGTCAAAAAAGCGGTCAAAGAAGATACATCTGATTTTCCTCAAAATATGCTCAATCCAAAATATACTTTTGATACTTTTGTCATCGGATCTGGAAACCGATTTGCACATGCTGCTTCCCTCGCAGTAGCGGAAGCGCCCGCGAAAGCTTACAACCCTTTATTTATCTATGGGGGCGTCGGCTTAGGGAAAACACACTTAATGCATGCGATCGGCCATTATGTAATAGATCATAATCCTTCTGCCAAAGTGGTTTATCTGTCTTCTGAGAAATTTACAAACGAATTCATCAACTCTATCCGAGATAATAAAGCCGTCGACTTCCGCAATCGCTATCGAAATGTTGATGTGCTTTTGATAGATGATATTCAATTTTTAGCGGGGAAAGAACAAACCCAGGAAGAATTTTTCCATACATTTAACACATTACACGAAGAAAGCAAACAAATCGTCATTTCAAGTGACCGGCCGCCAAAGGAAATTCCGACACTTGAAGACAGATTGCGCTCACGTTTTGAATGGGGACTTATTACAGATATCACACCGCCTGATCTAGAAACGAGAATTGCAATTTTAAGAAAAAAGGCCAAAGCAGAGGGCCTCGATATTCCGAACGAGGTTATGCTTTACATCGCGAATCAAATCGACAGCAATATTCGGGAACTCGAAGGAGCATTAATCAGAGTTGTCGCTTATTCATCTTTAATTAATAAAGATATTAATGCTGATCTGGCCGCTGAGGCGTTGAAAGATATTATTCCTTCCTCAAAACCGAAAGTCATTACGATAAAAGAAATTCAGAGGGTAGTAGGCCAGCAATTTAATATTAAACTCGAGGATTTCAAAGCAAAAAAACGGACAAAGTCAGTAGCTTTTCCGCGTCAAATCGCCATGTACTTATCAAGGGAAATGACTGATTCCTCTCTTCCTAAAATCGGTGAAGAGTTTGGAGGACGTGATCATACGACCGTTATTCATGCGCATGAAAAAATTTCAAAACTGCTGGCAGATGATGAACAGCTTCAGCAGCATGTAAAAGAAATTAAAGAACAGCTTAAATAG"
     defaultProtSeq="MENILDLWNQALAQIEKKLSKPSFETWMKSTKAHSLQGDTLTITAPNEFARDWLESRYLHLIADTIYELTGEELSIKFVIPQNQDVEDFMPKPQVKKAVKEDTSDFPQNMLNPKYTFDTFVIGSGNRFAHAASLAVAEAPAKAYNPLFIYGGVGLGKTHLMHAIGHYVIDHNPSAKVVYLSSEKFTNEFINSIRDNKAVDFRNRYRNVDVLLIDDIQFLAGKEQTQEEFFHTFNTLHEESKQIVISSDRPPKEIPTLEDRLRSRFEWGLITDITPPDLETRIAILRKKAKAEGLDIPNEVMLYIANQIDSNIRELEGALIRVVAYSSLINKDINADLAAEALKDIIPSSKPKVITIKEIQRVVGQQFNIKLEDFKAKKRTKSVAFPRQIAMYLSREMTDSSLPKIGEEFGGRDHTTVIHAHEKISKLLADDEQLQQHVKEIKEQLK"
     #url="http://195.24.221.74:9200/species*/_search?size=150&q=*.*&pretty=true"
     #api to get list of species
     urlAWS="http://3.133.132.243:9082/deeply/speciesList"
-    url="http://195.24.221.74:5001/searchspecies"
+
+    #url="http://195.24.221.74:5001/searchspecies"
     #r = requests.post(url, data=data, params=args, headers=header, verify=False)
     try:
-        r = requests.get(url)
+        r = requests.get(URL_API_SPECIES)
         species=r.json()
         allSpecies=species
     except:
-        r = requests.get(urlAWS)
-        species=r.json()
-        allSpecies=species
+        try: 
+            r = requests.get(urlAWS)
+            species=r.json()
+            allSpecies=species
+        except:
+            species=dict()
 
     #load dataset 
     #dataset="blog/datasets/species.v11.0.txt"
@@ -168,16 +204,17 @@ def ajaxsearchprotein(request):
             urlAWS="http://3.133.132.243:9082/deeply/searchProtein"
             url="http://195.24.221.74:5001/searchproteinbyname"
             #request to get list of species share the protein name
-            proteinList=""
+            proteinList=dict()
             try:
-                #r = requests.post(url, data=data, params=args, headers=header, verify=False)
-                r = requests.get(url, params=args)
+                r = requests.get(URL_API_PROTEIN_STRING, params=args) #urlAWS
                 proteinList=r.json()
-                allProtein=proteinList
-            except Exception as e:
-                r = requests.post(urlAWS, data=dataaws, params=argsaws, headers=header, verify=False)
-                proteinList=r.json()
-                allProtein=proteinList
+            except:
+                try: 
+                    r = requests.post(urlAWS, data=dataaws, params=argsaws, headers=header, verify=False) #url
+                    proteinList=r.json()
+                except Exception as e:
+                    proteinList=dict()
+
             #get protein ID
             proteinID=""
             proteinExternalId=""
@@ -224,8 +261,9 @@ def ajaxsearchprotein(request):
             listCheck= request.POST.get('listCheck', None)
             proteinID= request.POST.get('proteinID', None)
             proteinExternalId=request.POST.get('proteinExternalId', None)
+            modelDict=MODEL_DICT
             #modelDict={"deeplyTrain9deeply-model":"Deeply Core","sgsTrain9deeply-model":"Deeply SGSv0.1","deepHE9deeply-model":"DeeplyHE","SRBTRain9deeply-model":"Deeply Core SRB","SRBSgsTrain9deeply-model":"SGS SRB","SRBHETrain9deeply-model":"DeeplyHE SRB"}
-            modelDict={"deeplyTrain9deeply-model":"DeeplyCore","sgsTrain9deeply-model":"SGSv0.1","deepHE9deeply-model":"DeeplyHE","SRBTRain9deeply-model":"SRB-DeeplyCore","SRBSgsTrain9deeply-model":"SRB-SGSv0.1","SRBHETrain9deeply-model":"SRB-DeeplyHE"}
+            #modelDict={"deeplyTrain9deeply-model":"DeeplyCore","sgsTrain9deeply-model":"SGSv0.1","deepHE9deeply-model":"DeeplyHE","SRBTRain9deeply-model":"SRB-DeeplyCore","SRBSgsTrain9deeply-model":"SRB-SGSv0.1","SRBHETrain9deeply-model":"SRB-DeeplyHE"}
             #"mlModel":"Classical Machine Learning Model"
             actionDict={"feature":"Feature Engeneering","prediction":"Prediction"}
 
@@ -240,7 +278,8 @@ def ajaxsearchprotein(request):
             urlFeature="http://3.133.132.243:9082/deeply/feature"
             urlPredict="http://3.133.132.243:9082/deeply/prediction"
             #r = requests.post(url, data=data, params=args, headers=header, verify=False)
-            r = requests.get(urlSpecies)
+            #r = requests.get(urlSpecies) #URL_API_SPECIES
+            r = requests.get(URL_API_SPECIES) #URL_API_SPECIES
             speciesAll=r.json()     
             numberLocus=""
             isNumber=False        
@@ -422,9 +461,18 @@ def searchlistprotein(request):
     #load dataset 
     url="http://3.133.132.243:9082/deeply/speciesList"
     #r = requests.post(url, data=data, params=args, headers=header, verify=False)
-    r = requests.get(url)
-    species=r.json()
-    allSpecies=species 
+    try: 
+        r = requests.get(URL_API_SPECIES)
+        species=r.json()
+        allSpecies=species 
+    except Exception as err:
+        try:
+            r = requests.get(url)
+            species=r.json()
+            allSpecies=species 
+        except: 
+            print(err)
+
     #load dataset 
     #dataset="blog/datasets/species.v11.0.txt"
     #df = pandas.read_csv(dataset,sep= '\t', header = 0)
@@ -511,7 +559,8 @@ def ajaxsearchlistprotein(request):
             numberLocus=0
             isNumber=False
             header = {'Content-type': 'application/x-www-form-urlencoded; charset=utf-8'}
-            modelDict={"deeplyTrain9deeply-model":"DeeplyCore","sgsTrain9deeply-model":"SGSv0.1","deepHE9deeply-model":"DeeplyHE","SRBTRain9deeply-model":"SRB-DeeplyCore","SRBSgsTrain9deeply-model":"SRB-SGSv0.1","SRBHETrain9deeply-model":"SRB-DeeplyHE"}
+            modelDict=MODEL_DICT
+            #modelDict={"deeplyTrain9deeply-model":"DeeplyCore","sgsTrain9deeply-model":"SGSv0.1","deepHE9deeply-model":"DeeplyHE","SRBTRain9deeply-model":"SRB-DeeplyCore","SRBSgsTrain9deeply-model":"SRB-SGSv0.1","SRBHETrain9deeply-model":"SRB-DeeplyHE"}
             urlSequence="http://3.133.132.243:9082/deeply/getSequence"
             urlFeature="http://3.133.132.243:9082/deeply/feature"
             urlPredict="http://3.133.132.243:9082/deeply/prediction"
@@ -679,7 +728,7 @@ def searchorganism(request):
     url="http://195.24.221.74:5001/searchkeggorganis"
     species=dict()
     try: 
-        r = requests.get(url)
+        r = requests.get(URL_API_SPECIES_KEGG)
         species=r.json()
         allSpecies=species 
     except Exception as err:
@@ -716,12 +765,15 @@ def ajaxsearchorganism(request):
             header = {'Content-type': 'application/x-www-form-urlencoded; charset=utf-8'}
             listProtein=dict()
             try:
-                r = requests.post(url, data=data, params=args, headers=header, verify=False)
+                r =requests.get(URL_API_PROTEIN_EPATH, params=args)
                 listProtein=r.json()
-            except Exception as err: 
-                print (err)
-
-            
+            except :
+                try: 
+                    r = requests.post(url, data=data, params=args, headers=header, verify=False)
+                    listProtein=r.json()
+                except Exception as err:
+                    print (err)
+          
 
     return render(request, 'blog/ajaxsearchorganism.html', locals())
 #predict by Text Mining
@@ -833,6 +885,9 @@ def ajaxpedicttextmining(request):
         if action =='step1':
             elementid = request.POST.get('elementid', None)
             database = request.POST.get('database', None)
+            actionDict={"feature":"Feature Engeneering","prediction":"Prediction"}
+            urlSpeciesKegg="http://3.133.132.243:9082/deeply/searchKeggOrganism"
+            header = {'Content-type': 'application/x-www-form-urlencoded; charset=utf-8'}
             step=action
             listProtein=dict()
             if database == 'pmc':
