@@ -928,10 +928,13 @@ def ajaxpedicttextmining(request):
             else:
                 Articleid_pmc = allPUBMEDPMC["passages"][0]["infons"]["article-id_pmc"]
             index = 0
+            index1 = 0
             tabresult = dict()
+            speciestab = dict()
 
             for value in allPUBMEDPMC["passages"]:
                 result = dict()
+                result1 = dict()
                 gene = ""
                 species = ""
                 taxaid = ""
@@ -945,6 +948,7 @@ def ajaxpedicttextmining(request):
                         result['gene'] = gene
                         result['species'] = species
                         result['taxaid'] = taxaid
+                        result1['species'] = species
                         # test de l'existance de l'élément
                         verif = 0
                         if index > 0:
@@ -954,6 +958,15 @@ def ajaxpedicttextmining(request):
                         if verif == 0:
                             tabresult[index] = result
                             index = index + 1
+                        
+                        verif1 = 0
+                        if index1 > 0:
+                            for value1 in speciestab:
+                                if speciestab[value1]['species'] == species:
+                                    verif1 = 1
+                        if verif1 == 0:
+                            speciestab[index1] = result1
+                            index1 = index1 + 1    
         elif action == 'step2':
             step2 = action
             # PREDICTION_VALUE = dict()
