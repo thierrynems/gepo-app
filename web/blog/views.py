@@ -944,6 +944,7 @@ def ajaxpedicttextmining(request):
                         result['species'] = species
                         result['taxaid'] = taxaid
                         result1['species'] = species
+                        result1['taxaid'] = taxaid
                         # test de l'existance de l'élément
                         verif = 0
                         if index > 0:
@@ -957,7 +958,7 @@ def ajaxpedicttextmining(request):
                         verif1 = 0
                         if index1 > 0:
                             for value1 in speciestab:
-                                if speciestab[value1]['species'] == species:
+                                if speciestab[value1]['taxaid'] == taxaid:
                                     verif1 = 1
                         if verif1 == 0:
                             speciestab[index1] = result1
