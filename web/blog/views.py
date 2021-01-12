@@ -277,12 +277,17 @@ def ajaxsearchprotein(request):
             urlSpecies="http://3.133.132.243:9082/deeply/speciesList"
             urlFeature="http://3.133.132.243:9082/deeply/feature"
             urlPredict="http://3.133.132.243:9082/deeply/prediction"
+            numberLocus=""
+            isNumber=False
             #r = requests.post(url, data=data, params=args, headers=header, verify=False)
             #r = requests.get(urlSpecies) #URL_API_SPECIES
-            r = requests.get(URL_API_SPECIES) #URL_API_SPECIES
-            speciesAll=r.json()     
-            numberLocus=""
-            isNumber=False        
+            try: 
+                r = requests.get(URL_API_SPECIES) #URL_API_SPECIES
+                speciesAll=r.json()     
+                        
+            except:
+               speciesAll=dict()  
+
             #resultDict[index]=item
             #index=index+1
 
