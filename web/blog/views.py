@@ -12,7 +12,7 @@ from werkzeug.utils import secure_filename
 allSpecies=dict()
 allProtein=dict()
 #content list of model
-urlModel="http://3.133.132.243:9082/deeply/getModels"
+urlModel="http://18.117.189.73:9082/deeply/getModels"
 MODEL_DICT=dict()
 try: 
     r = requests.get(urlModel)
@@ -31,7 +31,7 @@ except:
 UPLOAD_FOLDER = 'static/model'
 ALLOWED_EXTENSIONS = {'h5', 'H5', 'hdf5', 'HDF5'}
 #URL des API
-URL_API="http://3.133.132.243:5001"
+URL_API="http://18.117.189.73:5001"
 #list of species
 URL_API_SPECIES=str(URL_API+"/searchspecies")
 URL_API_SPECIES_KEGG=str(URL_API+"/searchkeggorganis")
@@ -91,7 +91,7 @@ def ajaxpredictform(request):
             feature=True
             service=actionDict['feature']
             #url="http://ec2-18-222-229-153.us-east-2.compute.amazonaws.com/deeply/feature"
-            url="http://3.133.132.243:9082/deeply/feature"
+            url="http://18.117.189.73:9082/deeply/feature"
             r = requests.post(url, data=data, params=args, headers=header, verify=False)
             feauturePredict=r.json()
             CIARCSUFeat=feauturePredict['CIARCSUFeat']['DEG100011']
@@ -104,7 +104,7 @@ def ajaxpredictform(request):
             prediction=True
             service=actionDict['prediction']
             #url="http://ec2-18-222-229-153.us-east-2.compute.amazonaws.com/deeply/prediction"
-            url="http://3.133.132.243:9082/deeply/prediction"
+            url="http://18.117.189.73:9082/deeply/prediction"
             r = requests.post(url, data=data, params=args, headers=header, verify=False)
             resultPredict=r.json()
             EssentialGeneProbability=resultPredict['EssentialGeneProbability']
@@ -129,7 +129,7 @@ def searchbyprotein(request):
     defaultProtSeq="MENILDLWNQALAQIEKKLSKPSFETWMKSTKAHSLQGDTLTITAPNEFARDWLESRYLHLIADTIYELTGEELSIKFVIPQNQDVEDFMPKPQVKKAVKEDTSDFPQNMLNPKYTFDTFVIGSGNRFAHAASLAVAEAPAKAYNPLFIYGGVGLGKTHLMHAIGHYVIDHNPSAKVVYLSSEKFTNEFINSIRDNKAVDFRNRYRNVDVLLIDDIQFLAGKEQTQEEFFHTFNTLHEESKQIVISSDRPPKEIPTLEDRLRSRFEWGLITDITPPDLETRIAILRKKAKAEGLDIPNEVMLYIANQIDSNIRELEGALIRVVAYSSLINKDINADLAAEALKDIIPSSKPKVITIKEIQRVVGQQFNIKLEDFKAKKRTKSVAFPRQIAMYLSREMTDSSLPKIGEEFGGRDHTTVIHAHEKISKLLADDEQLQQHVKEIKEQLK"
     #url="http://195.24.221.74:9200/species*/_search?size=150&q=*.*&pretty=true"
     #api to get list of species
-    urlAWS="http://3.133.132.243:9082/deeply/speciesList"
+    urlAWS="http://18.117.189.73:9082/deeply/speciesList"
 
     #url="http://195.24.221.74:5001/searchspecies"
     #r = requests.post(url, data=data, params=args, headers=header, verify=False)
@@ -201,7 +201,7 @@ def ajaxsearchprotein(request):
             args = {'protein_name': proteinName,'species_id':specie}
             actionDict={"feature":"Feature Engeneering","prediction":"Prediction"}
             header = {'Content-type': 'application/x-www-form-urlencoded; charset=utf-8'}
-            urlAWS="http://3.133.132.243:9082/deeply/searchProtein"
+            urlAWS="http://18.117.189.73:9082/deeply/searchProtein"
             url="http://195.24.221.74:5001/searchproteinbyname"
             #request to get list of species share the protein name
             proteinList=dict()
@@ -250,7 +250,7 @@ def ajaxsearchprotein(request):
             filecsv.close()
             filetxt.close()
             # resquest to get list of organism
-            #url="http://3.133.132.243:9082/deeply/speciesList"
+            #url="http://18.117.189.73:9082/deeply/speciesList"
             #r = requests.get(url)
             #species=r.json()
             return render(request, 'blog/ajaxsearchprotein.html', locals())
@@ -269,14 +269,14 @@ def ajaxsearchprotein(request):
 
             #obtain protein_external_id : structure: 756067.MicvaDRAFT_3438
             #obtain: list of species check 
-            urlSpeciesKegg="http://3.133.132.243:9082/deeply/searchKeggOrganism"
+            urlSpeciesKegg="http://18.117.189.73:9082/deeply/searchKeggOrganism"
             header = {'Content-type': 'application/x-www-form-urlencoded; charset=utf-8'}
             listSpecies=listCheck.split(sep=";")
             index=0
             resultDict=dict()
-            urlSpecies="http://3.133.132.243:9082/deeply/speciesList"
-            urlFeature="http://3.133.132.243:9082/deeply/feature"
-            urlPredict="http://3.133.132.243:9082/deeply/prediction"
+            urlSpecies="http://18.117.189.73:9082/deeply/speciesList"
+            urlFeature="http://18.117.189.73:9082/deeply/feature"
+            urlPredict="http://18.117.189.73:9082/deeply/prediction"
             numberLocus=""
             isNumber=False
             #r = requests.post(url, data=data, params=args, headers=header, verify=False)
@@ -339,7 +339,7 @@ def ajaxsearchprotein(request):
                         subUrl=str(organism_code)+":"+str(geneLocus)
                         data = {'subURL': subUrl,'locusNumber':numberLocus,"organism_code":organism_code,"isNumber":isNumber}
                         arg = {'subURL': subUrl,'locusNumber':numberLocus,"organism_code":organism_code,"isNumber":isNumber}
-                        urlSequence="http://3.133.132.243:9082/deeply/getSequence"
+                        urlSequence="http://18.117.189.73:9082/deeply/getSequence"
                         try: 
                             r = requests.post(urlSequence, data=data, params=args, headers=header, verify=False)
                             sequences=r.json()
@@ -464,7 +464,7 @@ def ajaxsearchprotein(request):
 #vue du formulaire recherche par plusieurs proteines
 def searchlistprotein(request):
     #load dataset 
-    url="http://3.133.132.243:9082/deeply/speciesList"
+    url="http://18.117.189.73:9082/deeply/speciesList"
     #r = requests.post(url, data=data, params=args, headers=header, verify=False)
     try: 
         r = requests.get(URL_API_SPECIES)
@@ -515,7 +515,7 @@ def ajaxsearchlistprotein(request):
             data = {'proteinList': proteinList,'species_id':specie}
             args = {'proteinList': proteinList,'species_id':specie}
             header = {'Content-type': 'application/x-www-form-urlencoded; charset=utf-8'}
-            url="http://3.133.132.243:9082/deeply/getProteinList"
+            url="http://18.117.189.73:9082/deeply/getProteinList"
             #request to get list of species share the protein name
             r = requests.post(url, data=data, params=args, headers=header, verify=False)
             listProtein=r.json()
@@ -566,9 +566,9 @@ def ajaxsearchlistprotein(request):
             header = {'Content-type': 'application/x-www-form-urlencoded; charset=utf-8'}
             modelDict=MODEL_DICT
             #modelDict={"deeplyTrain9deeply-model":"DeeplyCore","sgsTrain9deeply-model":"SGSv0.1","deepHE9deeply-model":"DeeplyHE","SRBTRain9deeply-model":"SRB-DeeplyCore","SRBSgsTrain9deeply-model":"SRB-SGSv0.1","SRBHETrain9deeply-model":"SRB-DeeplyHE"}
-            urlSequence="http://3.133.132.243:9082/deeply/getSequence"
-            urlFeature="http://3.133.132.243:9082/deeply/feature"
-            urlPredict="http://3.133.132.243:9082/deeply/prediction"
+            urlSequence="http://18.117.189.73:9082/deeply/getSequence"
+            urlFeature="http://18.117.189.73:9082/deeply/feature"
+            urlPredict="http://18.117.189.73:9082/deeply/prediction"
             index=0
             resultDict=dict()
             filenamePredict="predictResultListProtein"
@@ -728,7 +728,7 @@ def ajaxsearchlistprotein(request):
 def searchorganism(request):
     #load dataset 
     
-    urlaws="http://3.133.132.243:9082/deeply/getKeggSpecie"
+    urlaws="http://18.117.189.73:9082/deeply/getKeggSpecie"
 
     url="http://195.24.221.74:5001/searchkeggorganis"
     species=dict()
@@ -764,7 +764,7 @@ def ajaxsearchorganism(request):
             step=action
             actionDict={"feature":"Feature Engeneering","prediction":"Prediction"}
             organism_code = request.POST.get('organism_code', None)
-            url="http://3.133.132.243:9082/deeply/getProteinListEpath"
+            url="http://18.117.189.73:9082/deeply/getProteinListEpath"
             data = {'organism_code': organism_code}
             args = {'organism_code': organism_code}
             header = {'Content-type': 'application/x-www-form-urlencoded; charset=utf-8'}
@@ -809,7 +809,7 @@ def loadmodel(request):
             data = {'model_code': model_code,'modelname':modelname,'feauturemodel':feauturemodel,'modeldoi':modeldoi,'author':author,'authoraffiliation':authoraffiliation,'modeldescription':modeldescription}
             args = {'model_code': model_code,'modelname':modelname,'feauturemodel':feauturemodel,'modeldoi':modeldoi,'author':author,'authoraffiliation':authoraffiliation,'modeldescription':modeldescription}
             header = {'Content-type': 'application/x-www-form-urlencoded; charset=utf-8'}
-            url="http://3.133.132.243:9082/deeply/insertModel"
+            url="http://18.117.189.73:9082/deeply/insertModel"
             message=""
             #request to get list of species share the protein name
             try: 
@@ -825,7 +825,7 @@ def loadmodel(request):
 
     modelList=dict()
     try: 
-        url="http://3.133.132.243:9082/deeply/getModels"
+        url="http://18.117.189.73:9082/deeply/getModels"
         r = requests.get(url)
         modelList=r.json()
     except Exception as err: 
@@ -891,7 +891,7 @@ def ajaxpedicttextmining(request):
             elementid = request.POST.get('elementid', None)
             database = request.POST.get('database', None)
             actionDict={"feature":"Feature Engeneering","prediction":"Prediction"}
-            urlSpeciesKegg="http://3.133.132.243:9082/deeply/searchKeggOrganism"
+            urlSpeciesKegg="http://18.117.189.73:9082/deeply/searchKeggOrganism"
             header = {'Content-type': 'application/x-www-form-urlencoded; charset=utf-8'}
             step=action
             listProtein=dict()
